@@ -3,82 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TagFlow - NFC 100% Funcional</title>
+<title>TagFlow v1.0 - Completo</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
-body{background:#0f0f0f;color:#fff;padding:16px}
-.header{text-align:center;padding:20px 0}
-.header h1{font-size:28px;color:#ff6a00}
-.card{background:#1a1a1a;border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid #2a2a2a}
-.card h2{font-size:16px;margin-bottom:12px;color:#ff6a00}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{background:#252525;border:1px solid #333;border-radius:12px;padding:14px 10px;color:#fff;font-size:13px;cursor:pointer}
-.btn:active{background:#ff6a00}
-.btn.pay{background:linear-gradient(135deg,#6a00ff,#ff6a00);border:none}
-input{width:100%;background:#0f0f0f;border:1px solid #333;border-radius:10px;padding:12px;color:#fff;margin:8px 0}
-.write-btn{width:100%;background:#ff6a00;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:700;color:#fff;margin-top:12px}
-.status{margin-top:12px;padding:12px;border-radius:10px;background:#111;text-align:center;display:none}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{background:#0f0f0f;color:#fff;padding:14px;padding-bottom:90px}
+h1{text-align:center;color:#ff6a00;font-size:24px;margin:16px 0 4px}
+.sub{text-align:center;color:#888;font-size:13px;margin-bottom:16px}
+.card{background:#1c1c1c;border:1px solid #2c2c2c;border-radius:18px;padding:14px;margin-bottom:14px}
+.card h2{color:#ff6a00;font-size:14px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{background:#262626;border:1px solid #333;border-radius:12px;padding:13px 8px;color:#fff;font-size:12px;display:flex;gap:6px;align-items:center;justify-content:center}
+.btn.pay{background:linear-gradient(135deg,#7b2fff,#ff6a00);border:none}
+label{font-size:11px;color:#aaa;margin-top:10px;display:block}
+input,select{width:100%;background:#101010;border:1px solid #333;border-radius:10px;padding:11px;color:#fff;font-size:14px;margin-top:4px}
+.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:16px;font-weight:800;color:#fff;font-size:15px;margin-top:14px}
+.status{margin-top:10px;padding:12px;border-radius:10px;text-align:center;font-size:13px;display:none}
 </style>
 </head>
 <body>
-<div class="header"><h1>TagFlow v1.0 - FUNCIONAL</h1><p style="color:#888">Grava na TAG de verdade</p></div>
-
+<h1>TagFlow v1.0</h1>
+<div class="sub">Cada função com seus campos - grava na TAG de verdade</div>
 <div class="card">
-<h2>📍 Localização (do seu print)</h2>
+<h2>📍 Localização</h2>
 <div class="grid">
-<button class="btn" onclick="setType('geo_custom')">📍 Local. personalizada</button>
-<button class="btn" onclick="setType('endereco')">🏠 Endereço</button>
-<button class="btn" onclick="setType('destino')">🚩 Endereço de destino</button>
-<button class="btn" onclick="setType('proximidades')">🔍 Pesquisa proximidades</button>
-<button class="btn" onclick="setType('streetview')">👁️ Vista da rua</button>
-<button class="btn" onclick="setType('emergencia')">🚨 Emergência</button>
+<button class="btn" onclick="openForm('local_personalizada')">📍 Local. personalizada</button>
+<button class="btn" onclick="openForm('endereco')">🏠 Endereço</button>
+<button class="btn" onclick="openForm('destino')">🚩 Endereço de destino</button>
+<button class="btn" onclick="openForm('proximidades')">🔍 Pesquisa proximidades</button>
+<button class="btn" onclick="openForm('streetview')">👁️ Vista da rua</button>
+<button class="btn" onclick="openForm('emergencia')">🚨 Emergência</button>
 </div>
 </div>
-
 <div class="card">
-<h2>💳 Pagamentos Nubank + 19</h2>
+<h2>💳 Pagamentos</h2>
 <div class="grid">
-<button class="btn pay" onclick="setType('pix')">💠 Pix</button>
-<button class="btn pay" onclick="setType('nubank')">💜 Nubank</button>
-<button class="btn pay" onclick="setType('paypal')">💙 PayPal</button>
-<button class="btn pay" onclick="setType('bitcoin')">₿ Bitcoin</button>
-<button class="btn pay" onclick="setType('link_universal')">🔗 Link Universal</button>
-<button class="btn pay" onclick="setType('mercadopago')">💚 Mercado Pago</button>
+<button class="btn pay" onclick="openForm('pix')">💠 Pix</button>
+<button class="btn pay" onclick="openForm('nubank')">💜 Nubank</button>
+<button class="btn pay" onclick="openForm('paypal')">💙 PayPal</button>
+<button class="btn pay" onclick="openForm('bitcoin')">₿ Bitcoin</button>
+<button class="btn pay" onclick="openForm('link_universal')">🔗 Link Universal</button>
+<button class="btn pay" onclick="openForm('mercadopago')">💚 Mercado Pago</button>
 </div>
 </div>
-
 <div class="card" id="formCard" style="display:none">
 <h2 id="formTitle"></h2>
-<input id="inputData" placeholder="Digite aqui...">
-<button class="write-btn" onclick="gravarNFC()">📲 GRAVAR NA TAG NFC AGORA</button>
+<div id="formFields"></div>
+<button class="write" onclick="gravar()">📲 GRAVAR NA TAG NFC AGORA</button>
 <div id="status" class="status"></div>
 </div>
-
 <script>
-let currentType='';
-function setType(t){currentType=t;document.getElementById('formCard').style.display='block';document.getElementById('formTitle').innerText=t;document.getElementById('inputData').value=t==='emergencia'?'190':'';window.scrollTo(0,9999)}
-async function gravarNFC(){
- const dado=document.getElementById('inputData').value.trim();
- if(!dado) return alert('Digite algo');
- if(!('NDEFReader' in window)) return alert('Use Chrome no Android com NFC ligado');
- try{
-  document.getElementById('status').style.display='block';
-  document.getElementById('status').innerText='Aproxime a TAG agora...';
-  const ndef=new NDEFReader();
-  let url=dado;
-  if(currentType==='endereco') url='geo:0,0?q='+encodeURIComponent(dado);
-  if(currentType==='destino') url='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(dado);
-  if(currentType==='geo_custom') url='geo:'+dado;
-  if(currentType==='proximidades') url='geo:0,0?q='+encodeURIComponent(dado);
-  if(currentType==='streetview') url='https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+dado;
-  if(currentType==='emergencia') url='tel:190';
-  if(currentType==='nubank') url='https://nubank.com.br/pagar/'+dado;
-  if(currentType==='paypal') url='https://paypal.me/'+dado;
-  if(currentType==='bitcoin') url='bitcoin:'+dado;
-  await ndef.write({records:[{recordType:'url',data:url}]});
-  document.getElementById('status').innerText='✅ GRAVADO COM SUCESSO!';
- }catch(e){document.getElementById('status').innerText='Erro: '+e.message}
-}
+let current='';
+const forms={
+ local_personalizada:{title:'📍 Local. personalizada',fields:[{id:'lat',label:'Latitude',ph:'-12.123'},{id:'lng',label:'Longitude',ph:'-39.456'},{id:'label',label:'Nome do local',ph:'Minha Loja'}],build:d=>`geo:${d.lat},${d.lng}?q=${encodeURIComponent(d.label||'Local')}`},
+ endereco:{title:'🏠 Endereço',fields:[{id:'rua',label:'Endereço completo',ph:'Av. Paulista, 1000 SP'}],build:d=>`geo:0,0?q=${encodeURIComponent(d.rua)}`},
+ destino:{title:'🚩 Endereço de destino',fields:[{id:'dest',label:'Para onde?',ph:'Teixeira de Freitas BA'},{id:'modo',label:'Modo',type:'select',opts:['Dirigindo','A pé']}],build:d=>`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(d.dest)}`},
+ proximidades:{title:'🔍 Pesquisa proximidades',fields:[{id:'q',label:'O que pesquisar?',ph:'farmácia'},{id:'local',label:'Perto de',ph:'centro'}],build:d=>`geo:0,0?q=${encodeURIComponent(d.q+(d.local?' '+d.local:''))}`},
+ streetview:{title:'👁️ Vista da rua',fields:[{id:'lat',label:'Latitude',ph:'-12.855'},{id:'lng',label:'Longitude',ph:'-39.123'}],build:d=>`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${d.lat},${d.lng}`},
+ emergencia:{title:'🚨 Emergência',fields:[{id:'tipo',label:'Tipo',type:'select',opts:['Polícia 190','SAMU 192','Bombeiros 193','Outro']},{id:'num',label:'Número se Outro',ph:'190'}],build:d=>{let n=d.tipo.includes('190')?'190':d.tipo.includes('192')?'192':d.tipo.includes('193')?'193':d.num||'190';return `tel:${n}`}},
+ pix:{title:'💠 Pix',fields:[{id:'chave',label:'Chave Pix',ph:'CPF/telefone/email'},{id:'valor',label:'Valor R$ (opcional)',ph:'10.00'},{id:'msg',label:'Mensagem',ph:'Pagamento'},{id:'copiacola',label:'OU Cole Copia e Cola completo',ph:'000201...'}],build:d=>d.copiacola.length>20?d.copiacola:`Pix:${d.chave} R$${d.valor||''} ${d.msg}`},
+ nubank:{title:'💜 Nubank',fields:[{id:'user',label:'Seu link ou usuário',ph:'seunome'},{id:'valor',label:'Valor',ph:'25'}],build:d=>d.user.startsWith('http')?d.user:`https://nubank.com.br/pagar/${d.user}`},
+ paypal:{title:'💙 PayPal',fields:[{id:'user',label:'Usuário PayPal.me',ph:'seunome'},{id:'valor',label:'Valor',ph:'10'}],build:d=>`https://paypal.me/${d.user}/${d.valor||''}`},
+ bitcoin:{title:'₿ Bitcoin',fields:[{id:'addr',label:'Endereço BTC',ph:'bc1q...'},{id:'valor',label:'Valor BTC',ph:'0.001'}],build:d=>`bitcoin:${d.addr}?amount=${d.valor}`},
+ link_universal:{title:'🔗 Link Universal',fields:[{id:'url',label:'Link completo',ph:'https://...'}],build:d=>d.url},
+ mercadopago:{title:'💚 Mercado Pago',fields:[{id:'url',label:'Link MP',ph:'https://mpago.la/...'}],build:d=>d.url},
+};
+function openForm(k){current=k;const c=forms[k];document.getElementById('formCard').style.display='block';document.getElementById('formTitle').innerText=c.title;let h='';c.fields.forEach(f=>{if(f.type==='select'){h+=`<label>${f.label}</label><select id="f_${f.id}">${f.opts.map(o=>`<option>${o}</option>`).join('')}</select>`}else{h+=`<label>${f.label}</label><input id="f_${f.id}" placeholder="${f.ph}">`}});document.getElementById('formFields').innerHTML=h;document.getElementById('status').style.display='none';scrollTo(0,9999)}
+async function gravar(){const c=forms[current];let data={};c.fields.forEach(f=>data[f.id]=document.getElementById('f_'+f.id).value.trim());const url=c.build(data);if(!('NDEFReader' in window)){document.getElementById('status').style.display='block';document.getElementById('status').innerText='Use Chrome no Android com NFC';return}try{const s=document.getElementById('status');s.style.display='block';s.innerText='📡 Aproxime a TAG...';s.style.background='#222';const ndef=new NDEFReader();await ndef.write({records:[{recordType:'url',data:url}]});s.style.background='#0a7a2a';s.innerText='✅ GRAVADO! '+url}catch(e){document.getElementById('status').style.display='block';document.getElementById('status').innerText='Erro: '+e.message}}
 </script>
 </body>
 </html>
