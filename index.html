@@ -5,70 +5,186 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TagFlow v1.0 - Completo</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:#0f0f0f;color:#fff;padding:14px;padding-bottom:90px}
-h1{text-align:center;color:#ff6a00;font-size:24px;margin:16px 0 4px}
-.sub{text-align:center;color:#888;font-size:13px;margin-bottom:16px}
-.card{background:#1c1c1c;border:1px solid #2c2c2c;border-radius:18px;padding:14px;margin-bottom:14px}
-.card h2{color:#ff6a00;font-size:14px;margin-bottom:10px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
+body{background:#0b0b0b;color:#fff;padding:12px;padding-bottom:100px}
+.top{text-align:center;padding:16px 0 8px}
+.top h1{color:#ff6a00;font-size:26px} .top h1 span{color:#fff}
+.tabs{display:flex;gap:8px;margin:12px 0;overflow-x:auto}
+.tab{flex:1;min-width:80px;background:#1e1e1e;border:1px solid #2e2e2e;border-radius:12px;padding:10px;text-align:center;font-size:12px}
+.tab.active{background:#ff6a00;border-color:#ff6a00;font-weight:700}
+.card{background:#171717;border:1px solid #262626;border-radius:18px;padding:12px;margin-bottom:12px}
+.card h2{color:#ff6a00;font-size:13px;margin-bottom:10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn{background:#262626;border:1px solid #333;border-radius:12px;padding:13px 8px;color:#fff;font-size:12px;display:flex;gap:6px;align-items:center;justify-content:center}
-.btn.pay{background:linear-gradient(135deg,#7b2fff,#ff6a00);border:none}
-label{font-size:11px;color:#aaa;margin-top:10px;display:block}
-input,select{width:100%;background:#101010;border:1px solid #333;border-radius:10px;padding:11px;color:#fff;font-size:14px;margin-top:4px}
-.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:16px;font-weight:800;color:#fff;font-size:15px;margin-top:14px}
-.status{margin-top:10px;padding:12px;border-radius:10px;text-align:center;font-size:13px;display:none}
+.btn{background:#252525;border:1px solid #333;border-radius:12px;padding:12px 6px;color:#fff;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:64px;justify-content:center}
+.btn.pay{background:linear-gradient(135deg,#6a00ff 0%,#ff6a00 100%);border:none}
+.formCard{background:#1c1c1c;border:2px solid #ff6a00;border-radius:18px;padding:14px;margin-top:12px;display:none}
+label{font-size:10px;color:#999;margin-top:10px;display:block;text-transform:uppercase}
+input,select{width:100%;background:#0f0f0f;border:1px solid #333;border-radius:10px;padding:11px;color:#fff;font-size:13px;margin-top:4px}
+.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:15px;font-weight:800;color:#fff;font-size:14px;margin-top:12px}
+.tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.tool{background:#101010;border:1px solid #2a2a2a;border-radius:12px;padding:12px;text-align:center;font-size:11px}
+.status{margin-top:10px;padding:12px;border-radius:10px;text-align:center;font-size:12px;display:none;word-break:break-all}
+.log{background:#0f0f0f;border-radius:10px;padding:10px;margin-top:10px;font-size:11px;color:#aaa;max-height:200px;overflow:auto}
 </style>
 </head>
 <body>
-<h1>TagFlow v1.0</h1>
-<div class="sub">Cada função com seus campos - grava na TAG de verdade</div>
-<div class="card">
+<div class="top"><h1>Tag<span>Flow</span> v1.0</h1><p>Completo • Pix EMV • Ler • Apagar • Info • 28 funções</p></div>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('padrao',this)">Padrão</div>
+<div class="tab" onclick="switchTab('local',this)">Localização</div>
+<div class="tab" onclick="switchTab('pag',this)">Pagamentos</div>
+<div class="tab" onclick="switchTab('ferr',this)">Ferramentas</div>
+</div>
+<div id="sec-padrao" class="card">
+<h2>📦 Padrão - Mais usados</h2>
+<div class="grid">
+<button class="btn" onclick="openF('url')"><b>🌐</b>URL / Link</button>
+<button class="btn" onclick="openF('texto')"><b>📝</b>Texto</button>
+<button class="btn" onclick="openF('email')"><b>📧</b>Email</button>
+<button class="btn" onclick="openF('telefone')"><b>📞</b>Telefone</button>
+<button class="btn" onclick="openF('sms')"><b>💬</b>SMS</button>
+<button class="btn" onclick="openF('wifi')"><b>📶</b>WiFi</button>
+<button class="btn" onclick="openF('bluetooth')"><b>🔵</b>Bluetooth</button>
+<button class="btn" onclick="openF('contato')"><b>👤</b>Contato vCard</button>
+<button class="btn" onclick="openF('app')"><b>📲</b>Abrir App</button>
+<button class="btn" onclick="openF('youtube')"><b>▶️</b>YouTube</button>
+</div>
+</div>
+<div id="sec-local" class="card" style="display:none">
 <h2>📍 Localização</h2>
 <div class="grid">
-<button class="btn" onclick="openForm('local_personalizada')">📍 Local. personalizada</button>
-<button class="btn" onclick="openForm('endereco')">🏠 Endereço</button>
-<button class="btn" onclick="openForm('destino')">🚩 Endereço de destino</button>
-<button class="btn" onclick="openForm('proximidades')">🔍 Pesquisa proximidades</button>
-<button class="btn" onclick="openForm('streetview')">👁️ Vista da rua</button>
-<button class="btn" onclick="openForm('emergencia')">🚨 Emergência</button>
+<button class="btn" onclick="openF('local_personalizada')"><b>📍</b>Local. personalizada</button>
+<button class="btn" onclick="openF('endereco')"><b>🏠</b>Endereço</button>
+<button class="btn" onclick="openF('destino')"><b>🚩</b>Endereço de destino</button>
+<button class="btn" onclick="openF('proximidades')"><b>🔍</b>Pesquisa proximidades</button>
+<button class="btn" onclick="openF('streetview')"><b>👁️</b>Vista da rua</button>
+<button class="btn" onclick="openF('emergencia')"><b>🚨</b>Emergência</button>
 </div>
 </div>
-<div class="card">
+<div id="sec-pag" class="card" style="display:none">
 <h2>💳 Pagamentos</h2>
 <div class="grid">
-<button class="btn pay" onclick="openForm('pix')">💠 Pix</button>
-<button class="btn pay" onclick="openForm('nubank')">💜 Nubank</button>
-<button class="btn pay" onclick="openForm('paypal')">💙 PayPal</button>
-<button class="btn pay" onclick="openForm('bitcoin')">₿ Bitcoin</button>
-<button class="btn pay" onclick="openForm('link_universal')">🔗 Link Universal</button>
-<button class="btn pay" onclick="openForm('mercadopago')">💚 Mercado Pago</button>
+<button class="btn pay" onclick="openF('pix')"><b>💠</b>Pix EMV</button>
+<button class="btn pay" onclick="openF('nubank')"><b>💜</b>Nubank</button>
+<button class="btn pay" onclick="openF('paypal')"><b>💙</b>PayPal</button>
+<button class="btn pay" onclick="openF('bitcoin')"><b>₿</b>Bitcoin</button>
+<button class="btn pay" onclick="openF('link_universal')"><b>🔗</b>Link Universal</button>
+<button class="btn pay" onclick="openF('mercadopago')"><b>💚</b>Mercado Pago</button>
+<button class="btn pay" onclick="openF('picpay')"><b>💛</b>PicPay</button>
+<button class="btn pay" onclick="openF('ifood')"><b>🍔</b>iFood / Loja</button>
 </div>
 </div>
-<div class="card" id="formCard" style="display:none">
-<h2 id="formTitle"></h2>
+<div id="sec-ferr" class="card" style="display:none">
+<h2>🛠️ Ferramentas da TAG</h2>
+<div class="tools">
+<div class="tool" onclick="lerTag()">📖<br><b>Ler TAG</b></div>
+<div class="tool" onclick="apagarTag()">🧹<br><b>Apagar</b></div>
+<div class="tool" onclick="infoTag()">ℹ️<br><b>Info TAG</b></div>
+</div>
+<div id="log" class="log" style="display:none"></div>
+</div>
+<div id="formCard" class="formCard">
+<h2 id="formTitle" style="color:#ff6a00;font-size:15px"></h2>
 <div id="formFields"></div>
 <button class="write" onclick="gravar()">📲 GRAVAR NA TAG NFC AGORA</button>
 <div id="status" class="status"></div>
-</div>
-<script>
+</div><script>
 let current='';
 const forms={
- local_personalizada:{title:'📍 Local. personalizada',fields:[{id:'lat',label:'Latitude',ph:'-12.123'},{id:'lng',label:'Longitude',ph:'-39.456'},{id:'label',label:'Nome do local',ph:'Minha Loja'}],build:d=>`geo:${d.lat},${d.lng}?q=${encodeURIComponent(d.label||'Local')}`},
- endereco:{title:'🏠 Endereço',fields:[{id:'rua',label:'Endereço completo',ph:'Av. Paulista, 1000 SP'}],build:d=>`geo:0,0?q=${encodeURIComponent(d.rua)}`},
- destino:{title:'🚩 Endereço de destino',fields:[{id:'dest',label:'Para onde?',ph:'Teixeira de Freitas BA'},{id:'modo',label:'Modo',type:'select',opts:['Dirigindo','A pé']}],build:d=>`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(d.dest)}`},
- proximidades:{title:'🔍 Pesquisa proximidades',fields:[{id:'q',label:'O que pesquisar?',ph:'farmácia'},{id:'local',label:'Perto de',ph:'centro'}],build:d=>`geo:0,0?q=${encodeURIComponent(d.q+(d.local?' '+d.local:''))}`},
+ url:{title:'🌐 URL / Link',fields:[{id:'url',label:'URL completa',ph:'https://seusite.com'}],build:d=>d.url},
+ texto:{title:'📝 Texto livre',fields:[{id:'txt',label:'Texto',ph:'Olá, isso está na TAG NFC!'}],build:d=>d.txt, type:'text'},
+ email:{title:'📧 Email',fields:[{id:'mail',label:'Email',ph:'contato@loja.com'},{id:'ass',label:'Assunto',ph:'Orçamento'},{id:'body',label:'Mensagem',ph:'Olá'}],build:d=>`mailto:${d.mail}?subject=${encodeURIComponent(d.ass)}&body=${encodeURIComponent(d.body)}`},
+ telefone:{title:'📞 Telefone',fields:[{id:'tel',label:'Número',ph:'73999999999'}],build:d=>`tel:${d.tel}`},
+ sms:{title:'💬 SMS',fields:[{id:'tel',label:'Número',ph:'73999999999'},{id:'msg',label:'Mensagem',ph:'Olá'}],build:d=>`sms:${d.tel}?body=${encodeURIComponent(d.msg)}`},
+ wifi:{title:'📶 WiFi',fields:[{id:'ssid',label:'Nome da rede (SSID)',ph:'MinhaWiFi'},{id:'pass',label:'Senha',ph:'12345678'},{id:'sec',label:'Segurança',type:'select',opts:['WPA','WEP','Sem senha']}],build:d=>`WIFI:T:${d.sec};S:${d.ssid};P:${d.pass};;`},
+ bluetooth:{title:'🔵 Bluetooth',fields:[{id:'mac',label:'MAC ou Nome',ph:'00:11:22:33:44:55'}],build:d=>d.mac},
+ contato:{title:'👤 Contato vCard',fields:[{id:'nome',label:'Nome',ph:'João Silva'},{id:'tel',label:'Telefone',ph:'73999999999'},{id:'email',label:'Email',ph:'joao@email.com'}],build:d=>`BEGIN:VCARD\nFN:${d.nome}\nTEL:${d.tel}\nEMAIL:${d.email}\nEND:VCARD`, type:'text'},
+ app:{title:'📲 Abrir App',fields:[{id:'pkg',label:'Pacote do app',ph:'com.whatsapp'}],build:d=>`market://details?id=${d.pkg}`},
+ youtube:{title:'▶️ YouTube',fields:[{id:'url',label:'Link do vídeo',ph:'https://youtube.com/watch?v=...'}],build:d=>d.url},
+ local_personalizada:{title:'📍 Local. personalizada',fields:[{id:'lat',label:'Latitude',ph:'-12.123456'},{id:'lng',label:'Longitude',ph:'-39.123456'},{id:'nome',label:'Nome do local',ph:'Minha Loja'}],build:d=>`geo:${d.lat},${d.lng}?q=${encodeURIComponent(d.nome)}`},
+ endereco:{title:'🏠 Endereço',fields:[{id:'end',label:'Endereço completo',ph:'Av. Paulista, 1000, SP'}],build:d=>`geo:0,0?q=${encodeURIComponent(d.end)}`},
+ destino:{title:'🚩 Endereço de destino',fields:[{id:'dest',label:'Destino',ph:'Teixeira de Freitas BA'},{id:'modo',label:'Modo',type:'select',opts:['Dirigindo','A pé','Bicicleta']}],build:d=>`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(d.dest)}`},
+ proximidades:{title:'🔍 Pesquisa proximidades',fields:[{id:'q',label:'O que?',ph:'farmácia, posto, banco'},{id:'cidade',label:'Cidade (opcional)',ph:'Teixeira de Freitas'}],build:d=>`geo:0,0?q=${encodeURIComponent(d.q+(d.cidade?' '+d.cidade:''))}`},
  streetview:{title:'👁️ Vista da rua',fields:[{id:'lat',label:'Latitude',ph:'-12.855'},{id:'lng',label:'Longitude',ph:'-39.123'}],build:d=>`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${d.lat},${d.lng}`},
- emergencia:{title:'🚨 Emergência',fields:[{id:'tipo',label:'Tipo',type:'select',opts:['Polícia 190','SAMU 192','Bombeiros 193','Outro']},{id:'num',label:'Número se Outro',ph:'190'}],build:d=>{let n=d.tipo.includes('190')?'190':d.tipo.includes('192')?'192':d.tipo.includes('193')?'193':d.num||'190';return `tel:${n}`}},
- pix:{title:'💠 Pix',fields:[{id:'chave',label:'Chave Pix',ph:'CPF/telefone/email'},{id:'valor',label:'Valor R$ (opcional)',ph:'10.00'},{id:'msg',label:'Mensagem',ph:'Pagamento'},{id:'copiacola',label:'OU Cole Copia e Cola completo',ph:'000201...'}],build:d=>d.copiacola.length>20?d.copiacola:`Pix:${d.chave} R$${d.valor||''} ${d.msg}`},
- nubank:{title:'💜 Nubank',fields:[{id:'user',label:'Seu link ou usuário',ph:'seunome'},{id:'valor',label:'Valor',ph:'25'}],build:d=>d.user.startsWith('http')?d.user:`https://nubank.com.br/pagar/${d.user}`},
- paypal:{title:'💙 PayPal',fields:[{id:'user',label:'Usuário PayPal.me',ph:'seunome'},{id:'valor',label:'Valor',ph:'10'}],build:d=>`https://paypal.me/${d.user}/${d.valor||''}`},
- bitcoin:{title:'₿ Bitcoin',fields:[{id:'addr',label:'Endereço BTC',ph:'bc1q...'},{id:'valor',label:'Valor BTC',ph:'0.001'}],build:d=>`bitcoin:${d.addr}?amount=${d.valor}`},
- link_universal:{title:'🔗 Link Universal',fields:[{id:'url',label:'Link completo',ph:'https://...'}],build:d=>d.url},
+ emergencia:{title:'🚨 Emergência',fields:[{id:'tipo',label:'Tipo',type:'select',opts:['Polícia 190','SAMU 192','Bombeiros 193','Defesa Civil 199','Outro']},{id:'num',label:'Se Outro, número',ph:'190'}],build:d=>{let m={'Polícia 190':'190','SAMU 192':'192','Bombeiros 193':'193','Defesa Civil 199':'199'};return `tel:${m[d.tipo]||d.num||'190'}`}},
+
+ pix:{title:'💠 Pix EMV - abre banco de verdade',fields:[{id:'chave',label:'Chave Pix',ph:'73999999999'},{id:'nome',label:'Nome recebedor',ph:'JOAO SILVA'},{id:'cidade',label:'Cidade',ph:'TEIXEIRA DE FREITAS'},{id:'valor',label:'Valor (opcional)',ph:'10.00'},{id:'txid',label:'ID Transação',ph:'TAGFLOW123'}],build:d=>gerarPixEMV(d.chave,d.nome,d.cidade,d.valor,d.txid), type:'text'},
+ nubank:{title:'💜 Nubank',fields:[{id:'link',label:'Link Nubank ou usuário',ph:'seunome'}],build:d=>d.link.startsWith('http')?d.link:`https://nubank.com.br/pagar/${d.link}`},
+ paypal:{title:'💙 PayPal',fields:[{id:'user',label:'Usuário paypal.me',ph:'seunome'},{id:'val',label:'Valor',ph:'25'}],build:d=>`https://paypal.me/${d.user}/${d.val||''}`},
+ bitcoin:{title:'₿ Bitcoin',fields:[{id:'addr',label:'Endereço BTC',ph:'bc1q...'},{id:'val',label:'Valor BTC',ph:'0.001'}],build:d=>`bitcoin:${d.addr}?amount=${d.val}`},
+ link_universal:{title:'🔗 Link Universal',fields:[{id:'url',label:'Link de pagamento',ph:'https://...'}],build:d=>d.url},
  mercadopago:{title:'💚 Mercado Pago',fields:[{id:'url',label:'Link MP',ph:'https://mpago.la/...'}],build:d=>d.url},
+ picpay:{title:'💛 PicPay',fields:[{id:'user',label:'@ do PicPay',ph:'@seunome'}],build:d=>`https://picpay.me/${d.user.replace('@','')}`},
+ ifood:{title:'🍔 iFood / Loja',fields:[{id:'url',label:'Link da loja',ph:'https://...'}],build:d=>d.url},
 };
-function openForm(k){current=k;const c=forms[k];document.getElementById('formCard').style.display='block';document.getElementById('formTitle').innerText=c.title;let h='';c.fields.forEach(f=>{if(f.type==='select'){h+=`<label>${f.label}</label><select id="f_${f.id}">${f.opts.map(o=>`<option>${o}</option>`).join('')}</select>`}else{h+=`<label>${f.label}</label><input id="f_${f.id}" placeholder="${f.ph}">`}});document.getElementById('formFields').innerHTML=h;document.getElementById('status').style.display='none';scrollTo(0,9999)}
-async function gravar(){const c=forms[current];let data={};c.fields.forEach(f=>data[f.id]=document.getElementById('f_'+f.id).value.trim());const url=c.build(data);if(!('NDEFReader' in window)){document.getElementById('status').style.display='block';document.getElementById('status').innerText='Use Chrome no Android com NFC';return}try{const s=document.getElementById('status');s.style.display='block';s.innerText='📡 Aproxime a TAG...';s.style.background='#222';const ndef=new NDEFReader();await ndef.write({records:[{recordType:'url',data:url}]});s.style.background='#0a7a2a';s.innerText='✅ GRAVADO! '+url}catch(e){document.getElementById('status').style.display='block';document.getElementById('status').innerText='Erro: '+e.message}}
+function switchTab(name,el){
+ document.querySelectorAll('[id^=sec-]').forEach(s=>s.style.display='none');
+ document.getElementById('sec-'+name).style.display='block';
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ el.classList.add('active');
+ document.getElementById('formCard').style.display='none';
+}
+function openF(k){
+ current=k;const c=forms[k];const fc=document.getElementById('formCard');fc.style.display='block';
+ document.getElementById('formTitle').innerText=c.title;
+ let h='';c.fields.forEach(f=>{
+  if(f.type==='select'){h+=`<label>${f.label}</label><select id="f_${f.id}">${f.opts.map(o=>`<option>${o}</option>`).join('')}</select>`}
+  else{h+=`<label>${f.label}</label><input id="f_${f.id}" placeholder="${f.ph}">`}
+ });
+ document.getElementById('formFields').innerHTML=h;
+ document.getElementById('status').style.display='none';
+ setTimeout(()=>window.scrollTo(0,document.body.scrollHeight),100);
+}
+function gerarPixEMV(chave,nome,cidade,valor,txid){
+ nome=(nome||'RECEBEDOR').toUpperCase().substring(0,25);
+ cidade=(cidade||'BRASIL').toUpperCase().substring(0,15);
+ function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
+ let merchant=tlv('00','br.gov.bcb.pix')+tlv('01',chave);
+ let ma=tlv('26',merchant);
+ let payload=tlv('00','01')+tlv('01','12')+ma+tlv('52','0000')+tlv('53','986')+(valor?tlv('54',valor):'')+tlv('58','BR')+tlv('59',nome)+tlv('60',cidade)+tlv('62',tlv('05',txid||'***'));
+ let withCRC=payload+'6304';
+ let crc=0xFFFF;
+ for(let i=0;i<withCRC.length;i++){crc^=withCRC.charCodeAt(i)<<8;for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;crc&=0xFFFF}
+ return withCRC+crc.toString(16).toUpperCase().padStart(4,'0');
+}
+async function gravar(){
+ const c=forms[current];let d={};c.fields.forEach(f=>d[f.id]=document.getElementById('f_'+f.id).value.trim());
+ let finalData=c.build(d);
+ if(!finalData){alert('Preencha');return}
+ if(!('NDEFReader' in window)){showS('❌ Use Chrome no Android com NFC ligado');return}
+ try{
+  showS('📡 Aproxime a TAG NFC...','info');
+  const ndef=new NDEFReader();
+  let record;
+  if(c.type==='text'){record={recordType:'text',data:finalData}}
+  else{record={recordType:'url',data:finalData}}
+  await ndef.write({records:[record]});
+  showS('✅ GRAVADO COM SUCESSO! '+finalData.substring(0,80)+'...','ok');
+  addLog('Gravado: '+finalData);
+ }catch(e){showS('Erro: '+e.message,'err')}
+}
+function showS(msg,type){
+ const s=document.getElementById('status');s.style.display='block';s.innerText=msg;
+ s.style.background=type==='ok'?'#0a6a2a':type==='err'?'#6a0a0a':'#222';
+}
+function addLog(t){const l=document.getElementById('log');l.style.display='block';l.innerHTML+='<div>> '+t+'</div>';}
+async function lerTag(){
+ if(!('NDEFReader' in window)) return alert('Use Chrome Android');
+ try{
+  showS('📖 Aproxime a TAG para LER...','info');
+  const ndef=new NDEFReader();
+  await ndef.scan();
+  ndef.onreading=e=>{
+   let txt='';e.message.records.forEach(r=>{txt+=`Tipo:${r.recordType} Dado:${new TextDecoder().decode(r.data)} \n`});
+   showS('📖 LIDO: '+txt,'ok');addLog('Leitura: '+txt);
+  }
+ }catch(e){showS('Erro leitura: '+e.message,'err')}
+}
+async function apagarTag(){
+ if(!('NDEFReader' in window)) return alert('Use Chrome Android');
+ try{showS('🧹 Aproxime para APAGAR...','info');const ndef=new NDEFReader();await ndef.write({records:[]});showS('✅ TAG APAGADA!','ok')}catch(e){showS('Erro: '+e.message,'err')}
+}
+function infoTag(){addLog('Info: Web NFC grava 100% real, mas não expõe UID por privacidade. TAGs NTAG213/215/216 suportadas.');document.getElementById('log').style.display='block';}
 </script>
 </body>
 </html>
