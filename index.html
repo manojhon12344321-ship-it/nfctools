@@ -1,26 +1,155 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dion NFC</title><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><meta name="theme-color" content="#ff6a00"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#f8f8fa;padding:12px;padding-bottom:100px}.top{display:flex;justify-content:space-between;padding:16px;background:#fff;border-radius:20px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.05)}.top h1{font-size:26px;font-weight:900}.top h1 span{color:#ff6a00}.tabs{display:flex;gap:8px;padding:10px;background:#fff;border-radius:16px;margin-bottom:12px;overflow-x:auto}.tab{font-size:12px;color:#888;padding:7px 12px;border-radius:20px;white-space:nowrap;cursor:pointer}.tab.active{background:#ff6a00;color:#fff;font-weight:700}.card{background:#fff;border-radius:20px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.btn{background:#f5f5f7;border:1px solid #eee;border-radius:16px;padding:14px 4px;font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}.btn b{font-size:20px}.btn.pay{background:#111;color:#fff}.btn.pay.rast{background:#ff6a00}.formCard{background:#fff;border:2px solid #ff6a00;border-radius:20px;padding:16px;margin-top:12px;display:none}.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:15px;font-weight:900;color:#fff;margin-top:12px;cursor:pointer}.status{margin-top:10px;padding:10px;border-radius:10px;text-align:center;font-size:12px;display:none}.tagItem{border:1px solid #eee;border-radius:14px;padding:10px;margin-bottom:8px}.counter{background:#ff6a00;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px}</style></head><body>
-<div class="top"><div><h1>Dion <span>NFC</span></h1><p style="font-size:11px;color:#888">Modelo 1 - Completo PWA + Rastreavel</p></div>🔔</div>
-<div class="tabs"><div class="tab active" onclick="switchTab('padrao',this)">Escrever</div><div class="tab" onclick="switchTab('local',this)">Local</div><div class="tab" onclick="switchTab('pag',this)">Pag</div><div class="tab" onclick="switchTab('outros',this)">Outros</div><div class="tab" onclick="switchTab('minhas',this)">Minhas <span id="tagCount" class="counter" style="display:none">0</span></div></div>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dion NFC</title><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><meta name="theme-color" content="#ff6a00"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#f8f8fa;padding:12px;padding-bottom:120px}.top{display:flex;justify-content:space-between;padding:16px;background:#fff;border-radius:20px;margin-bottom:12px}.top h1{font-size:26px;font-weight:900}.top h1 span{color:#ff6a00}.tabs{display:flex;gap:8px;padding:10px;background:#fff;border-radius:16px;margin-bottom:12px;overflow-x:auto}.tab{font-size:12px;color:#888;padding:8px 12px;border-radius:20px;cursor:pointer}.tab.active{background:#ff6a00;color:#fff}.card{background:#fff;border-radius:20px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.btn{background:#f5f5f7;border:1px solid #eee;border-radius:16px;padding:14px 4px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}.btn b{font-size:20px}.btn.pay{background:#111;color:#fff}.btn.pay.rast{background:#ff6a00}.formCard{background:#fff;border:2px solid #ff6a00;border-radius:20px;padding:16px;margin-top:12px;display:none}.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:14px;font-weight:900;color:#fff;margin-top:10px}.status{margin-top:8px;padding:10px;border-radius:10px;text-align:center;display:none}.counter{background:#ff6a00;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px}input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-top:4px}label{font-size:10px;color:#888;font-weight:700;margin-top:8px;display:block}</style></head><body>
+<div class="top"><div><h1>Dion <span>NFC</span></h1><p style="font-size:11px;color:#888">Completo PWA + Rastreavel - FIX</p></div>🔔</div>
+<div class="tabs"><div class="tab active" id="t-padrao" onclick="switchTab('padrao')">Escrever</div><div class="tab" id="t-local" onclick="switchTab('local')">Local</div><div class="tab" id="t-pag" onclick="switchTab('pag')">Pag</div><div class="tab" id="t-outros" onclick="switchTab('outros')">Outros</div><div class="tab" id="t-minhas" onclick="switchTab('minhas')">Minhas <span id="tagCount" class="counter" style="display:none">0</span></div></div>
 <div id="sec-padrao" class="card"><div class="grid"><button class="btn" onclick="openF('url')"><b>🌐</b>URL</button><button class="btn" onclick="openF('texto')"><b>📝</b>Texto</button><button class="btn" onclick="openF('email')"><b>📧</b>Email</button><button class="btn" onclick="openF('telefone')"><b>📞</b>Tel</button><button class="btn" onclick="openF('sms')"><b>💬</b>SMS</button><button class="btn" onclick="openF('wifi')"><b>📶</b>WiFi</button><button class="btn" onclick="openF('bluetooth')"><b>🔵</b>BT</button><button class="btn" onclick="openF('contato')"><b>👤</b>Contato</button><button class="btn" onclick="openF('app')"><b>📲</b>App</button><button class="btn" onclick="openF('youtube')"><b>▶️</b>YT</button></div></div>
 <div id="sec-local" class="card" style="display:none"><div class="grid"><button class="btn" onclick="openF('local_personalizada')"><b>📍</b>Local</button><button class="btn" onclick="openF('endereco')"><b>🏠</b>End</button><button class="btn" onclick="openF('destino')"><b>🚩</b>Destino</button><button class="btn" onclick="openF('proximidades')"><b>🔍</b>Perto</button><button class="btn" onclick="openF('coordenada')"><b>📌</b>Coord</button><button class="btn" onclick="openF('maps')"><b>🗺️</b>Maps</button></div></div>
-<div id="sec-pag" class="card" style="display:none"><div class="grid"><button class="btn pay rast" onclick="openF('pay_rastreavel')"><b>🔗</b>LINK RASTREAVEL</button><button class="btn pay" onclick="openF('pix')"><b>💠</b>Pix EMV</button><button class="btn pay" onclick="openF('pix_id')"><b>🆔</b>Pix ID</button><button class="btn pay" onclick="openF('nubank')"><b>💜</b>Nubank</button><button class="btn pay" onclick="openF('mercadopago')"><b>💚</b>Mercado Pago</button><button class="btn pay" onclick="openF('link_universal')"><b>🌐</b>Link</button><button class="btn pay" onclick="openF('picpay')"><b>💛</b>PicPay</button><button class="btn pay" onclick="openF('ifood')"><b>🍔</b>iFood</button></div></div>
-<div id="sec-outros" class="card" style="display:none"><div class="grid"><button class="btn" onclick="openF('copiar_tag')"><b>📋</b>Copiar</button><button class="btn" onclick="apagarTag()"><b>🗑️</b>Apagar</button><button class="btn" onclick="openF('bloquear_tag')"><b>🔒</b>Bloq</button><button class="btn" onclick="lerTag()"><b>👁️</b>Ler</button><button class="btn" onclick="openF('clonar')"><b>👯</b>Clonar</button><button class="btn" onclick="verLogs()"><b>📊</b>Logs</button><button class="btn" onclick="exportarBackup()"><b>💾</b>Backup</button><button class="btn" onclick="document.getElementById('importFile').click()"><b>📥</b>Import</button></div><input type="file" id="importFile" style="display:none" onchange="importarBackup(this)"></div>
-<div id="sec-minhas" class="card" style="display:none"><div style="display:flex;gap:6px;margin-bottom:8px"><button onclick="exportarBackup()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #eee">💾 Export</button><button onclick="verLogs()" style="flex:1;padding:8px;border-radius:10px;background:#ff6a00;color:#fff;border:none">📊 Logs</button><button onclick="limparTodas()" style="padding:8px;border-radius:10px;border:1px solid #fcc;color:#c00">🗑️</button></div><div id="tagsList">Nenhuma</div><div id="logsList" style="display:none"></div></div>
-<div id="formCard" class="formCard"><h2 id="formTitle" style="color:#ff6a00"></h2><div id="formFields"></div><div><label>Nome TAG</label><input id="f_nomeTag" placeholder="Ex: Caixa 01"></div><button class="write" onclick="gravar()">GRAVAR NFC</button><div id="status" class="status"></div><div id="qrArea" style="text-align:center;display:none"><img id="qrImg" style="width:180px;border-radius:12px"></div></div><script>
-var PROTOCOLS=["http://","https://"];var current="",copiedData="",tags=[];try{tags=JSON.parse(localStorage.getItem('dion_nfc_v2')||'[]')}catch(e){tags=[]}
+<div id="sec-pag" class="card" style="display:none"><div class="grid"><button class="btn pay rast" onclick="openF('pay_rastreavel')"><b>🔗</b>LINK RASTREAVEL</button><button class="btn pay" onclick="openF('pix')"><b>💠</b>Pix EMV</button><button class="btn pay" onclick="openF('pix_id')"><b>🆔</b>Pix ID</button><button class="btn pay" onclick="openF('nubank')"><b>💜</b>Nubank</button><button class="btn pay" onclick="openF('mercadopago')"><b>💚</b>MP</button><button class="btn pay" onclick="openF('link_universal')"><b>🌐</b>Link</button><button class="btn pay" onclick="openF('picpay')"><b>💛</b>PicPay</button><button class="btn pay" onclick="openF('ifood')"><b>🍔</b>iFood</button></div></div>
+<div id="sec-outros" class="card" style="display:none"><div class="grid"><button class="btn" onclick="openF('copiar_tag')"><b>📋</b>Copiar</button><button class="btn" onclick="apagarTag()"><b>🗑️</b>Apagar</button><button class="btn" onclick="lerTag()"><b>👁️</b>Ler</button><button class="btn" onclick="verLogs()"><b>📊</b>Logs</button><button class="btn" onclick="exportarBackup()"><b>💾</b>Backup</button><button class="btn" onclick="document.getElementById('importFile').click()"><b>📥</b>Import</button></div><input type="file" id="importFile" style="display:none" onchange="importarBackup(this)"></div>
+<div id="sec-minhas" class="card" style="display:none"><div id="tagsList">Nenhuma</div><div id="logsList" style="display:none;margin-top:10px"></div></div>
+<div id="formCard" class="formCard"><h2 id="formTitle" style="color:#ff6a00"></h2><div id="formFields"></div><div><label>Nome da TAG</label><input id="f_nomeTag" placeholder="Ex: Caixa 01"></div><button class="write" onclick="gravar()">📲 GRAVAR NA TAG NFC</button><div id="status" class="status"></div><div id="qrArea" style="text-align:center;display:none;margin-top:10px"><img id="qrImg" style="width:180px"><br><small>QR Code</small></div></div><script>
+let PROTOCOLS=["https://","http://"];
+let current="";let copiedData="";let tags=[];
+try{tags=JSON.parse(localStorage.getItem('dion_nfc_v2')||'[]')}catch(e){tags=[]}
 function saveTags(){localStorage.setItem('dion_nfc_v2',JSON.stringify(tags));updateCounter();renderTags()}
-function updateCounter(){var c=document.getElementById('tagCount');c.style.display=tags.length?'inline':'none';c.innerText=tags.length}updateCounter();
-var forms={
-url:{title:'URL',hasProto:true,build:d=>d.proto+d.url},texto:{title:'Texto',fields:[{id:'txt',label:'Texto'}],build:d=>d.txt,type:'text'},email:{title:'Email',fields:[{id:'mail',label:'Email'}],build:d=>'mailto:'+d.mail},telefone:{title:'Tel',fields:[{id:'tel',label:'Tel'}],build:d=>'tel:'+d.tel},sms:{title:'SMS',fields:[{id:'num',label:'Num'},{id:'msg',label:'Msg'}],build:d=>'sms:'+d.num},wifi:{title:'WiFi',fields:[{id:'ssid',label:'SSID'},{id:'pass',label:'Senha'}],build:d=>'WIFI:T:WPA;S:'+d.ssid+';P:'+d.pass+';;'},bluetooth:{title:'BT',fields:[{id:'mac',label:'MAC'}],build:d=>'BT:'+d.mac},contato:{title:'Contato',fields:[{id:'nome',label:'Nome'}],build:d=>'BEGIN:VCARD\nFN:'+d.nome+'\nEND:VCARD',type:'text'},app:{title:'App',fields:[{id:'pkg',label:'Pkg'}],build:d=>'market://details?id='+d.pkg},youtube:{title:'YT',hasProto:true,build:d=>d.proto+d.url},
-local_personalizada:{title:'Local',fields:[{id:'lat',label:'Lat'},{id:'lng',label:'Lng'}],build:d=>'geo:'+d.lat+','+d.lng},endereco:{title:'End',fields:[{id:'end',label:'End'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.end)},destino:{title:'Destino',fields:[{id:'dest',label:'Dest'}],build:d=>'https://maps.google.com/?daddr='+encodeURIComponent(d.dest)},proximidades:{title:'Perto',fields:[{id:'q',label:'O que'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.q)},coordenada:{title:'Coord',fields:[{id:'lat',label:'Lat'},{id:'lng',label:'Lng'}],build:d=>'geo:'+d.lat+','+d.lng},maps:{title:'Maps',hasProto:true,build:d=>d.proto+d.url},
-pay_rastreavel:{title:'LINK RASTREAVEL',fields:[{id:'chave',label:'Chave Pix'},{id:'nome',label:'Nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'},{id:'tagid',label:'ID TAG'},{id:'loja',label:'Loja'}],build:d=>'https://manojhon12344321-ship-it.github.io/nfctools/pay.html?chave='+encodeURIComponent(d.chave)+'&nome='+encodeURIComponent(d.nome||'DION')+'&cidade='+encodeURIComponent(d.cidade||'TEIXEIRA')+'&valor='+encodeURIComponent(d.valor||'')+'&tag='+encodeURIComponent(d.tagid||'CAIXA01')+'&loja='+encodeURIComponent(d.loja||'Dion')},
-pix:{title:'Pix EMV',fields:[{id:'chave',label:'Chave'},{id:'nome',label:'Nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'}],build:d=>gerarPixEMV(d.chave,d.nome,d.cidade,d.valor,'DIONNFC'),type:'text'},pix_id:{title:'Pix ID',fields:[{id:'codigo',label:'Codigo'}],build:d=>d.codigo,type:'text'},nubank:{title:'Nubank',hasProto:true,build:d=>d.proto+d.url},mercadopago:{title:'MP',hasProto:true,build:d=>d.proto+d.url},link_universal:{title:'Link',hasProto:true,build:d=>d.proto+d.url},picpay:{title:'PicPay',hasProto:true,build:d=>d.proto+d.url},ifood:{title:'iFood',hasProto:true,build:d=>d.proto+d.url},copiar_tag:{title:'Copiar',isCopy:true,build:()=>copiedData},bloquear_tag:{title:'Bloquear',isLock:true,build:()=>'LOCK'},clonar:{title:'Clonar',isCopy:true,build:()=>copiedData},
+function updateCounter(){let c=document.getElementById('tagCount');if(tags.length>0){c.style.display='inline';c.innerText=tags.length}else{c.style.display='none'}}updateCounter();
+let forms={
+url:{title:'URL / Site',hasProto:true,build:d=>d.proto+d.url},
+texto:{title:'Texto',fields:[{id:'txt',label:'Seu texto'}],build:d=>d.txt,type:'text'},
+email:{title:'Email',fields:[{id:'mail',label:'Email'}],build:d=>'mailto:'+d.mail},
+telefone:{title:'Telefone',fields:[{id:'tel',label:'Numero'}],build:d=>'tel:'+d.tel},
+sms:{title:'SMS',fields:[{id:'num',label:'Numero'}],build:d=>'sms:'+d.num},
+wifi:{title:'WiFi',fields:[{id:'ssid',label:'Nome WiFi'},{id:'pass',label:'Senha'}],build:d=>'WIFI:T:WPA;S:'+d.ssid+';P:'+d.pass+';;'},
+bluetooth:{title:'Bluetooth',fields:[{id:'mac',label:'MAC'}],build:d=>'BT:'+d.mac},
+contato:{title:'Contato',fields:[{id:'nome',label:'Nome'}],build:d=>'BEGIN:VCARD\nFN:'+d.nome+'\nEND:VCARD',type:'text'},
+app:{title:'App',fields:[{id:'pkg',label:'Pacote app'}],build:d=>'market://details?id='+d.pkg},
+youtube:{title:'YouTube',hasProto:true,build:d=>d.proto+d.url},
+local_personalizada:{title:'Local',fields:[{id:'lat',label:'Latitude'},{id:'lng',label:'Longitude'}],build:d=>'geo:'+d.lat+','+d.lng},
+endereco:{title:'Endereco',fields:[{id:'end',label:'Endereco'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.end)},
+destino:{title:'Destino',fields:[{id:'dest',label:'Destino'}],build:d=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(d.dest)},
+proximidades:{title:'Perto',fields:[{id:'q',label:'O que procurar'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.q)},
+coordenada:{title:'Coordenada',fields:[{id:'lat',label:'Lat'},{id:'lng',label:'Lng'}],build:d=>'geo:'+d.lat+','+d.lng},
+maps:{title:'Google Maps',hasProto:true,build:d=>d.proto+d.url},
+pay_rastreavel:{title:'LINK RASTREAVEL (Pagina bonita)',fields:[{id:'chave',label:'Chave Pix'},{id:'nome',label:'Seu nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'},{id:'tagid',label:'ID da TAG ex: CAIXA01'},{id:'loja',label:'Nome loja'}],build:d=>'https://manojhon12344321-ship-it.github.io/nfctools/pay.html?chave='+encodeURIComponent(d.chave)+'&nome='+encodeURIComponent(d.nome||'DION')+'&cidade='+encodeURIComponent(d.cidade||'TEIXEIRA')+'&valor='+encodeURIComponent(d.valor||'')+'&tag='+encodeURIComponent(d.tagid||'CAIXA01')+'&loja='+encodeURIComponent(d.loja||'Dion NFC')},
+pix:{title:'Pix EMV Real',fields:[{id:'chave',label:'Chave Pix'},{id:'nome',label:'Nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'}],build:d=>gerarPixEMV(d.chave,d.nome,d.cidade,d.valor,'DIONNFC'),type:'text'},
+pix_id:{title:'Pix ID',fields:[{id:'codigo',label:'Codigo Pix'}],build:d=>d.codigo,type:'text'},
+nubank:{title:'Nubank',hasProto:true,build:d=>d.proto+d.url},
+mercadopago:{title:'Mercado Pago',hasProto:true,build:d=>d.proto+d.url},
+link_universal:{title:'Link',hasProto:true,build:d=>d.proto+d.url},
+picpay:{title:'PicPay',hasProto:true,build:d=>d.proto+d.url},
+ifood:{title:'iFood',hasProto:true,build:d=>d.proto+d.url},
+copiar_tag:{title:'Copiar',isCopy:true,build:()=>copiedData},
 };
-function switchTab(n,el){['padrao','local','pag','outros','minhas'].forEach(s=>{let e=document.getElementById('sec-'+s);if(e)e.style.display=s===n?'block':'none'});document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('formCard').style.display='none';if(n==='minhas')renderTags()}
-function openF(k){current=k;let c=forms[k];let fc=document.getElementById('formCard');fc.style.display='block';document.getElementById('formTitle').innerText=c.title;let h='';if(c.hasProto){h+=`<label>Prot</label><select id="f_proto">${PROTOCOLS.map(p=>`<option ${p==='https://'?'selected':''}>${p}</option>`).join('')}</select><label>URL</label><input id="f_url">`}else if(c.fields){c.fields.forEach(f=>{h+=`<label>${f.label}</label><input id="f_${f.id}">`})}document.getElementById('formFields').innerHTML=h;document.getElementById('status').style.display='none';document.getElementById('qrArea').style.display='none'}
-function gerarPixEMV(chave,nome,cidade,valor,txid){nome=(nome||'RECEBEDOR').toUpperCase().substring(0,25);cidade=(cidade||'BRASIL').toUpperCase().substring(0,15);function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}let p1=tlv('00','br.gov.bcb.pix')+tlv('01',chave||'');let ma=tlv('26',p1);let p=tlv('00','01')+tlv('01','12')+ma+tlv('52','0000')+tlv('53','986')+(valor?tlv('54',parseFloat(valor).toFixed(2)):'')+tlv('58','BR')+tlv('59',nome)+tlv('60',cidade)+tlv('62',tlv('05',txid));let w=p+'6304';let crc=0xFFFF;for(let i=0;i<w.length;i++){crc^=w.charCodeAt(i)<<8;for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;crc&=0xFFFF}return w+crc.toString(16).toUpperCase().padStart(4,'0')}
-async function gravar(){let c=forms[current];let d={};if(c.fields)c.fields.forEach(f=>{let el=document.getElementById('f_'+f.id);if(el)d[f.id]=el.value.trim()});if(c.hasProto){d.proto=document.getElementById('f_proto').value;d.url=document.getElementById('f_url').value.trim()}let finalData=c.build(d);let nomeTag=document.getElementById('f_nomeTag').value.trim()||c.title;if(!finalData){showS('Preencha','err');return}if(!('NDEFReader' in window)){showS('Chrome Android','err');return}try{showS('Aproxime TAG...','info');let ndef=new NDEFReader();let rec=c.type==='text'?{recordType:'text',data:finalData}:{recordType:'url',[STRIPPED] if(c.isLock){await ndef.write({records:[]});showS('Bloq','ok');return}await ndef.write({records:[rec]});tags.unshift({id:Date.now(),nome:nomeTag,tipo:c.title,dado:finalData,data:new Date().toLocaleString()});saveTags();showS('GRAVADO:'+nomeTag,'ok');gerarQR(finalData)}catch(e){showS('Erro:'+e.message,'err')}}
-function renderTags(){let l=document.getElementById('tagsList');if(tags.length==0){l.innerHTML='Nenhuma';return}l.innerHTML=tags.map(t=>`<div class="tagItem"><b>${t.nome}</b><small> ${t.tipo} ${t.data}</small><p style="font-size:11px;word-break:break-all;background:#fafafa;padding:4px">${t.dado.substring(0,100)}</p><button onclick="qrTag(${t.id})">QR</button> <button onclick="deletarTag(${t.id})">Del</button></div>`).join('')}
-function qrTag(id){let t=tags.find(x=>x.id===id);if(t)gerarQR(t.dado)}function deletarTag(id){tags=tags.filter(x=>x.id!==id);saveTags()}function limparTodas(){tags=[];saveTags()}function gerarQR(txt){let i=document.getElementById('qrImg');let a=document.getElementById('qrArea');a.style.display='block';i.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(txt)}
-async function lerTag(){try{let n=new NDEFReader();await n.scan();showS('Aproxime','info');n.onreading=e=>{let d=new TextDecoder();let t='';for(let r of e.message.records){try{t+=d.decode(r.data)}catch{t+=r.data}}copiedData=t;showS('LIDO:'+t.substring(0,50),'ok')}}catch(e){showS('Erro','err')}}async function apagarTag(){let n=new NDEFReader();await n.write({records:[]});showS('Apagada','ok')}function exportarBackup(){let b=new Blob([JSON.stringify(tags)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dion.json';a.click()}function importarBackup(i){let f=i.files[0];let r=new FileReader();r.onload=e=>{tags=JSON.parse(e.target.result).concat(tags);saveTags()};r.readAsText(f)}function verLogs(){let logs=JSON.parse(localStorage.getItem('dion_logs')||'[]');let l=document.getElementById('logsList');l.style.display=l.style.display==='none'?'block':'none';l.innerHTML=logs.length?logs.map(x=>`<div class="tagItem"><small>${x.data} ${x.loja} ${x.tag} R$ ${x.valor}</small></div>`).join(''):'Sem logs'}function showS(m,t){let s=document.getElementById('status');s.style.display='block';s.innerText=m;s.style.background=t==='ok'?'#e8f5e9':'#ffebee'}if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
+function switchTab(n){
+['padrao','local','pag','outros','minhas'].forEach(s=>{
+let e=document.getElementById('sec-'+s);if(e)e.style.display=(s===n)?'block':'none';
+let t=document.getElementById('t-'+s);if(t){if(s===n)t.classList.add('active');else t.classList.remove('active');}
+});
+document.getElementById('formCard').style.display='none';
+if(n==='minhas')renderTags();
+}
+function openF(k){
+current=k;let c=forms[k];let fc=document.getElementById('formCard');
+fc.style.display='block';document.getElementById('formTitle').innerText=c.title;
+let h='';
+if(c.hasProto){
+h+=`<label>Protocolo</label><select id="f_proto"><option>https://</option><option>http://</option></select><label>URL / Link</label><input id="f_url" placeholder="seu link">`;
+}else if(c.fields){
+c.fields.forEach(f=>{h+=`<label>${f.label}</label><input id="f_${f.id}" placeholder="">`;});
+}
+document.getElementById('formFields').innerHTML=h;
+document.getElementById('status').style.display='none';
+document.getElementById('qrArea').style.display='none';
+window.scrollTo(0,document.body.scrollHeight);
+}
+function gerarPixEMV(chave,nome,cidade,valor,txid){
+nome=(nome||'RECEBEDOR').toUpperCase().substring(0,25);
+cidade=(cidade||'BRASIL').toUpperCase().substring(0,15);
+function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
+let pay=tlv('00','br.gov.bcb.pix')+tlv('01',chave||'');
+let ma=tlv('26',pay);
+let p=tlv('00','01')+tlv('01','12')+ma+tlv('52','0000')+tlv('53','986')+(valor?tlv('54',parseFloat(valor).toFixed(2)):'')+tlv('58','BR')+tlv('59',nome)+tlv('60',cidade)+tlv('62',tlv('05',txid));
+let w=p+'6304';let crc=0xFFFF;
+for(let i=0;i<w.length;i++){crc^=w.charCodeAt(i)<<8;for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;crc&=0xFFFF}
+return w+crc.toString(16).toUpperCase().padStart(4,'0');
+}
+async function gravar(){
+let c=forms[current];if(!c)return;
+let d={};
+if(c.fields)c.fields.forEach(f=>{
+let el=document.getElementById('f_'+f.id);
+if(el)d[f.id]=el.value.trim();
+});
+if(c.hasProto){
+d.proto=document.getElementById('f_proto').value;
+d.url=document.getElementById('f_url').value.trim();
+}
+let finalData=c.build(d);
+let nomeTag=document.getElementById('f_nomeTag').value.trim()||c.title;
+if(!finalData){showS('Preencha os campos','err');return;}
+if(!('NDEFReader' in window)){showS('Abra no Chrome Android com NFC','err');return;}
+try{
+showS('Aproxime a TAG NFC...','info');
+let ndef=new NDEFReader();
+let rec;
+if(c.type==='text'){rec={recordType:'text',data:finalData};}
+else{rec={recordType:'url',data:finalData};}
+await ndef.write({records:[rec]});
+tags.unshift({id:Date.now(),nome:nomeTag,tipo:c.title,dado:finalData,data:new Date().toLocaleString()});
+saveTags();
+showS('GRAVADO: '+nomeTag,'ok');
+gerarQR(finalData);
+}catch(e){showS('Erro: '+e.message,'err');}
+}
+function renderTags(){
+let l=document.getElementById('tagsList');
+if(tags.length===0){l.innerHTML='Nenhuma TAG salva';return;}
+l.innerHTML=tags.map(t=>`<div style="border:1px solid #eee;border-radius:12px;padding:10px;margin-bottom:8px"><b>${t.nome}</b> <small>${t.tipo}</small><p style="font-size:11px;word-break:break-all;background:#fafafa;padding:6px;border-radius:8px;margin-top:4px">${t.dado.substring(0,120)}</p><button onclick="gerarQR('${t.dado.replace(/'/g,'')}')">QR</button> <button onclick="delTag(${t.id})">Apagar</button></div>`).join('');
+}
+function delTag(id){tags=tags.filter(x=>x.id!==id);saveTags();}
+function gerarQR(txt){
+let img=document.getElementById('qrImg');
+let area=document.getElementById('qrArea');
+area.style.display='block';
+img.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(txt);
+document.getElementById('formCard').style.display='block';
+}
+async function lerTag(){
+try{
+let n=new NDEFReader();
+await n.scan();
+showS('Aproxime a TAG para ler...','info');
+n.onreading=e=>{
+let dec=new TextDecoder();let t='';
+for(let r of e.message.records){try{t+=dec.decode(r.data)}catch(e){t+=r.data}}
+copiedData=t;showS('LIDO: '+t.substring(0,80),'ok');gerarQR(t);
+};
+}catch(e){showS('Erro: '+e.message,'err');}
+}
+async function apagarTag(){
+try{let n=new NDEFReader();await n.write({records:[]});showS('TAG apagada!','ok');}catch(e){showS('Erro','err');}
+}
+function exportarBackup(){
+let b=new Blob([JSON.stringify(tags)],{type:'application/json'});
+let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dion-backup.json';a.click();
+}
+function importarBackup(inp){
+let f=inp.files[0];if(!f)return;
+let r=new FileReader();
+r.onload=e=>{try{let d=JSON.parse(e.target.result);tags=d.concat(tags);saveTags();showS('Importado!','ok');}catch{showS('Erro arquivo','err');}};
+r.readAsText(f);
+}
+function verLogs(){
+let logs=JSON.parse(localStorage.getItem('dion_logs')||'[]');
+let l=document.getElementById('logsList');
+l.style.display=(l.style.display==='none')?'block':'none';
+if(logs.length===0)l.innerHTML='Nenhum log ainda';
+else l.innerHTML=logs.map(x=>`<div style="border:1px solid #eee;padding:6px;margin-bottom:4px;border-radius:8px"><small>${x.data} - ${x.loja} - ${x.tag} - R$ ${x.valor||'livre'}</small></div>`).join('');
+}
+function showS(m,t){
+let s=document.getElementById('status');
+s.style.display='block';s.innerText=m;
+s.style.background=(t==='ok')?'#e8f5e9':(t==='err')?'#ffebee':'#fff3e0';
+s.style.color=(t==='ok')?'#2e7d32':(t==='err')?'#c62828':'#e65100';
+}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 </script></body></html>
