@@ -2,214 +2,174 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dion NFC - Completo PWA + Rastreavel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dion NFC - Completo PWA + Rastreavel - FIX</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#ff6a00">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/147/147258.png">
 <style>
-*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#f5f5f5;color:#111}
-header{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06);position:sticky;top:0;z-index:10}
-header b{font-size:22px}header b span{color:#ff6a00}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#f5f5f5;position:sticky;top:60px;z-index:9}
-.tabs button{flex:0 0 auto;padding:10px 18px;border:none;border-radius:20px;background:#fff;font-weight:700;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
-.tabs button.active{background:#ff6a00;color:#fff}
-.container{max-width:520px;margin:auto;padding:12px}
-.tab-content{display:none;background:#fff;border-radius:20px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:80px}
-.tab-content.active{display:block}
-.pag-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
-.pag-btn{padding:14px 6px;border:none;border-radius:16px;background:#111;color:#fff;font-weight:800;font-size:12px;text-align:center;line-height:1.2}
-.pag-btn.active{background:#ff6a00;color:#fff}
-.local-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.local-btn{padding:12px 6px;border:2px solid #eee;border-radius:12px;background:#f9f9f9;font-weight:700;font-size:12px;text-align:center}
-.local-btn.active{border-color:#ff6a00;background:#fff7ed;color:#ff6a00}
-label{display:block;font-weight:800;font-size:11px;margin-top:12px;margin-bottom:5px;color:#555}
-input,textarea,select{width:100%;padding:12px;border:2px solid #eee;border-radius:12px;font-size:14px;background:#fafafa}
-input:focus,textarea:focus{border-color:#ff6a00;background:#fff}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:900;font-size:14px;margin-top:12px;cursor:pointer}
-.btn-orange{background:#ff6a00;color:#fff}
-.btn-black{background:#111;color:#fff}
-.alert{background:#fff7ed;border:2px solid #ff6a00;border-radius:12px;padding:10px;font-size:11px;margin-bottom:12px}
-.item{border:1px solid #eee;border-radius:12px;padding:10px;margin-top:8px;font-size:11px}
+*{box-sizing:border-box}
+body{font-family:Arial, sans-serif;background:#0e0e0e;color:#fff;margin:0;padding:10px;padding-bottom:90px}
+.topo{display:flex;gap:8px;overflow-x:auto;white-space:nowrap;padding:5px 0}
+.topo button{padding:10px 18px;border-radius:20px;border:1px solid #333;background:#1e1e1e;color:#fff;font-weight:bold}
+.topo button.ativo{background:#ff6a00;color:#000;border-color:#ff6a00}
+.card{background:#1e1e1e;border-radius:16px;padding:14px;margin-top:14px;border:1px solid #2a2a2a}
+.titulo-laranja{color:#ff6a00;font-weight:bold;font-size:14px;margin:10px 0 6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.btn-opcao{background:#000;border:1px solid #333;border-radius:14px;padding:14px 5px;color:#fff;text-align:center;font-size:12px;font-weight:bold}
+.btn-opcao.ativo{border-color:#ff6a00;background:#ff6a00;color:#000}
+input, select{width:100%;padding:14px;border-radius:12px;border:2px solid #333;background:#000;color:#fff;margin:6px 0;outline:none}
+input:focus{border-color:#ff6a00}
+#btnGravar{width:100%;padding:18px;background:#ff6a00;border:none;border-radius:12px;font-weight:bold;font-size:18px;color:#000;margin-top:12px}
+#status{text-align:center;margin-top:10px;font-weight:bold}
+.aba{display:none}.aba.ativa{display:block}
 </style>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
-}
-</script>
 </head>
 <body>
-<header><div><b>Dion <span>NFC</span></b><div style="font-size:11px;color:#888">Completo PWA + Rastreavel - FIX</div></div><div>🔔</div></header>
-<div class="tabs">
-<button onclick="openTab('escrever')" id="tab-escrever">Escrever</button>
-<button onclick="openTab('local')" id="tab-local">Local</button>
-<button class="active" onclick="openTab('pag')" id="tab-pag">Pag</button>
-<button onclick="openTab('outros')" id="tab-outros">Outros</button>
-<button onclick="openTab('minhas')" id="tab-minhas">Minhas</button>
+
+<div class="topo">
+ <button class="ativo" id="t-escrever" onclick="mudarAba('escrever')">Escrever</button>
+ <button id="t-local" onclick="mudarAba('local')">Local</button>
+ <button id="t-pag" onclick="mudarAba('pag')">Pag</button>
+ <button id="t-outros" onclick="mudarAba('outros')">Outros</button>
+ <button id="t-minhas" onclick="mudarAba('minhas')">Minhas</button>
+</div><!-- ABA ESCREVER -->
+<div id="aba-escrever" class="aba ativa">
+  <div class="card">
+    <div class="titulo-laranja">TIPO DE CONTEÚDO</div>
+    <div class="grid3">
+      <div class="btn-opcao ativo" id="op-url" onclick="setTipo('url')">🔗<br>LINK<br>RASTREAVEL</div>
+      <div class="btn-opcao" id="op-pixemv" onclick="setTipo('pixemv')">Pix<br>EMV</div>
+      <div class="btn-opcao" id="op-pixid" onclick="setTipo('pixid')">Pix<br>ID</div>
+      <div class="btn-opcao" id="op-linkgen" onclick="setTipo('linkgen')">🌐<br>Link<br>Genérico</div>
+      <div class="btn-opcao" id="op-texto" onclick="setTipo('texto')">📝<br>Texto<br>Livre</div>
+      <div class="btn-opcao" id="op-wifi" onclick="setTipo('wifi')">📶<br>WiFi</div>
+    </div>
+
+    <div class="titulo-laranja">LINK GENERICO</div>
+    <input id="inputLink" type="url" placeholder="https://g.page/r/seu-link-de-avaliacao-google">
+    <small style="color:#888">Cole aqui o link de Avaliação do Google. Quando o cliente encostar, vai direto pra avaliar.</small>
+
+    <div class="titulo-laranja">NOME DA TAG</div>
+    <input id="inputNome" placeholder="Ex: Avaliação Google Loja Centro">
+
+    <button id="btnGravar">📲 GRAVAR NA TAG</button>
+    <div id="status">Pronto pra gravar</div>
+  </div>
 </div>
-<div class="container">
-<div id="pag" class="tab-content active">
-  <div class="pag-grid">
-    <button class="pag-btn active" onclick="openPag('rastreavel')" id="btn-rastreavel">🔗<br>LINK RASTREAVEL</button>
-    <button class="pag-btn" onclick="openPag('emv')" id="btn-emv">💠<br>Pix EMV</button>
-    <button class="pag-btn" onclick="openPag('pixid')" id="btn-pixid">🆔<br>Pix ID</button>
-    <button class="pag-btn" onclick="openPag('nubank')" id="btn-nubank">💜<br>Nubank</button>
-    <button class="pag-btn" onclick="openPag('mp')" id="btn-mp">💚<br>MP</button>
-    <button class="pag-btn" onclick="openPag('link')" id="btn-link">🌐<br>Link</button>
-    <button class="pag-btn" onclick="openPag('picpay')" id="btn-picpay">💛<br>PicPay</button>
-    <button class="pag-btn" onclick="openPag('ifood')" id="btn-ifood">🍔<br>iFood</button>
+
+<!-- ABA PAG -->
+<div id="aba-pag" class="aba">
+  <div class="card">
+    <div class="titulo-laranja">PAGAMENTO / PIX</div>
+    <input id="pixChave" placeholder="Sua chave PIX (CPF, celular, email)">
+    <input id="pixValor" placeholder="Valor (opcional) ex: 10.00">
+    <button class="btn-opcao" style="width:100%;margin-top:10px" onclick="gerarPixLink()">Gerar Link PIX</button>
   </div>
-  <div id="pag-rastreavel" class="pag-sub">
-    <div class="alert"><b>🔗 LINK RASTREAVEL - PAGINA BONITA + LOGS</b><br>✅ Gera link com QR Code + salva quem usou. Pode usar Chave Pix OU Codigo Copia e Cola.</div>
-    <label>🔑 CHAVE PIX (OU COLE CODIGO COPIA E COLA AQUI)</label><textarea id="chavePix" rows="3" placeholder="Cole aqui: 000201... (codigo copia e cola) OU sua chave pix"></textarea>
-    <label>👤 SEU NOME</label><input id="nomePix" placeholder="Ex: Manoel Jhon">
-    <label>🏙️ CIDADE</label><input id="cidadePix" placeholder="Teixeira de Freitas" value="Teixeira de Freitas">
-    <label>💰 VALOR</label><input id="valorPix" placeholder="Ex: 10.00">
-    <label>🏷️ ID DA TAG ex: CAIXA01</label><input id="tagIdRast" placeholder="CAIXA01" value="CAIXA01">
-    <label>🏪 NOME LOJA</label><input id="lojaRast" placeholder="Dion Lanchonete" value="Dion NFC">
-    <label>📌 NOME DA TAG</label><input id="nomeTagRast" placeholder="Ex: Caixa 01" value="Caixa 01">
-    <button class="btn btn-orange" onclick="gerarRastreavel()">🔗 GERAR LINK RASTREAVEL</button>
-    <button class="btn btn-black" onclick="gravarUltimoLink()">📲 GRAVAR NA TAG NFC</button>
-  </div>
-  <div id="pag-emv" class="pag-sub" style="display:none">
-    <div class="alert"><b>💠 PIX EMV - CODIGO BRUTO</b></div>
-    <label>📋 CODIGO PIX EMV (000201...)</label><textarea id="codigoEmv" rows="5" placeholder="000201..."></textarea>
-    <label>Nome da TAG</label><input id="nomeEmv" placeholder="Caixa 01">
-    <button class="btn btn-orange" onclick="gravarEmv()">📲 GRAVAR EMV NA TAG</button>
-  </div>
-  <div id="pag-pixid" class="pag-sub" style="display:none">
-    <div class="alert"><b>🆔 PIX ID - COPIA E COLA MAIS FACIL - RECOMENDADO</b><br>✅ Esse é o JEITO MAIS FACIL. Só colar o codigo copia e cola do seu banco aqui.</div>
-    <label>📋 CODIGO PIX - COPIA E COLA DO BANCO</label><textarea id="codigoPixId" rows="6" placeholder="Cole aqui o codigo que começa com 000201... que seu banco gerou"></textarea>
-    <small style="color:#16a34a;font-weight:700">👉 Abra seu banco > Pix > Pix Copia e Cola > Copiar codigo > Cole aqui</small>
-    <label style="margin-top:12px">📌 NOME DA TAG</label><input id="nomePixId" placeholder="Ex: Caixa 01" value="Caixa 01">
-    <label>🏷️ ID TAG</label><input id="idPixId" placeholder="CAIXA01" value="CAIXA01">
-    <button class="btn btn-orange" onclick="gravarPixId()">📲 GRAVAR NA TAG NFC - COPIA E COLA</button>
-    <button class="btn btn-black" onclick="gerarLinkPixId()">🔗 GERAR LINK PAGINA BONITA TAMBEM</button>
-  </div>  <div id="pag-nubank" class="pag-sub" style="display:none"><div class="alert"><b>💜 NUBANK</b></div><label>Link Nubank</label><input id="linkNubank" placeholder="https://nubank.com.br/..."><label>Nome TAG</label><input id="nomeNubank" placeholder="Nubank"><button class="btn btn-orange" onclick="gravarLinkGenerico('linkNubank','nomeNubank')">📲 GRAVAR</button></div>
-  <div id="pag-mp" class="pag-sub" style="display:none"><div class="alert"><b>💚 MERCADO PAGO</b></div><label>Link Mercado Pago</label><input id="linkMp" placeholder="https://mpago.la/..."><label>Nome TAG</label><input id="nomeMp" placeholder="MP"><button class="btn btn-orange" onclick="gravarLinkGenerico('linkMp','nomeMp')">📲 GRAVAR</button></div>
-  <div id="pag-link" class="pag-sub" style="display:none"><div class="alert"><b>🌐 LINK GENERICO</b></div><label>Link</label><input id="linkGenerico" placeholder="https://..."><label>Nome TAG</label><input id="nomeLinkGen" placeholder="Link"><button class="btn btn-orange" onclick="gravarLinkGenerico('linkGenerico','nomeLinkGen')">📲 GRAVAR</button></div>
-  <div id="pag-picpay" class="pag-sub" style="display:none"><div class="alert"><b>💛 PICPAY</b></div><label>Link PicPay</label><input id="linkPicpay" placeholder="https://picpay.me/..."><label>Nome TAG</label><input id="nomePicpay" placeholder="PicPay"><button class="btn btn-orange" onclick="gravarLinkGenerico('linkPicpay','nomePicpay')">📲 GRAVAR</button></div>
-  <div id="pag-ifood" class="pag-sub" style="display:none"><div class="alert"><b>🍔 IFOOD</b></div><label>Link iFood</label><input id="linkIfood" placeholder="https://www.ifood.com.br/..."><label>Nome TAG</label><input id="nomeIfood" placeholder="iFood"><button class="btn btn-orange" onclick="gravarLinkGenerico('linkIfood','nomeIfood')">📲 GRAVAR</button></div>
-  <div id="resultadoLink" style="display:none;margin-top:12px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:10px;font-size:11px;word-break:break-all"><b>✅ LINK GERADO:</b><div id="linkGerado" style="margin-top:6px"></div><button class="btn btn-black" onclick="copiarLink()" style="margin-top:8px">📋 COPIAR LINK</button></div>
 </div>
-<div id="local" class="tab-content">
-  <div class="local-grid">
-    <button class="local-btn active" onclick="openLocal('local')" id="btn-local">📍<br>Local</button>
-    <button class="local-btn" onclick="openLocal('end')" id="btn-end">🏠<br>End</button>
-    <button class="local-btn" onclick="openLocal('destino')" id="btn-destino">🚩<br>Destino</button>
-    <button class="local-btn" onclick="openLocal('perto')" id="btn-perto">🔍<br>Perto</button>
-    <button class="local-btn" onclick="openLocal('coord')" id="btn-coord">📌<br>Coord</button>
-    <button class="local-btn" onclick="openLocal('maps')" id="btn-maps">🗺️<br>Maps</button>
+
+<!-- ABA OUTRAS -->
+<div id="aba-local" class="aba"><div class="card">Função Local - Use o tipo Texto Livre com endereço do Maps</div></div>
+<div id="aba-outros" class="aba"><div class="card">Função WiFi, Telefone e outras aqui</div></div>
+
+<!-- ABA MINHAS - ONDE VÊ O RASTREIO -->
+<div id="aba-minhas" class="aba">
+  <div class="card">
+    <div class="titulo-laranja">MINHAS TAGS GRAVADAS (RASTREIO)</div>
+    <div id="listaTags"></div>
   </div>
-  <div id="local-local" class="local-sub"><div class="alert"><b>📍 LOCAL - GPS ATUAL</b></div><button class="btn btn-black" onclick="pegarGPS()">📡 PEGAR MINHA LOCALIZAÇÃO</button><label>Latitude</label><input id="localLat"><label>Longitude</label><input id="localLng"><label>Nome TAG</label><input id="localNome" placeholder="Minha Loja"><button class="btn btn-orange" onclick="gravarLocal('local')">📲 GRAVAR LOCAL</button></div>
-  <div id="local-end" class="local-sub" style="display:none"><div class="alert"><b>🏠 ENDEREÇO</b></div><label>Endereço</label><input id="endEndereco" placeholder="Rua, numero, cidade"><label>Nome TAG</label><input id="endNome"><button class="btn btn-orange" onclick="gravarLocal('end')">📲 GRAVAR</button></div>
-  <div id="local-destino" class="local-sub" style="display:none"><div class="alert"><b>🚩 DESTINO - ROTA</b></div><label>Destino</label><input id="destEndereco"><label>Nome TAG</label><input id="destNome"><button class="btn btn-orange" onclick="gravarLocal('destino')">📲 GRAVAR ROTA</button></div>
-  <div id="local-perto" class="local-sub" style="display:none"><div class="alert"><b>🔍 PERTO</b></div><label>O que buscar</label><input id="pertoOq" placeholder="Farmácia, Lanchonete"><label>Nome TAG</label><input id="pertoNome"><button class="btn btn-orange" onclick="gravarLocal('perto')">📲 GRAVAR</button></div>
-  <div id="local-coord" class="local-sub" style="display:none"><div class="alert"><b>📌 COORD</b></div><label>Lat</label><input id="coordLat"><label>Lng</label><input id="coordLng"><label>Nome TAG</label><input id="coordNome"><button class="btn btn-orange" onclick="gravarLocal('coord')">📲 GRAVAR</button></div>
-  <div id="local-maps" class="local-sub" style="display:none">
-    <div class="alert" style="border-color:#22c55e;background:#f0fdf4"><b>🗺️ MAPS - JEITO 1 - COLA LINK DO GOOGLE MAPS</b><br>✅ Copia link no Google Maps > Compartilhar > Copiar link e cola aqui.</div>
-    <label>🔗 COLE O LINK DO GOOGLE MAPS AQUI</label><textarea id="mapsLink" rows="3" placeholder="https://maps.app.goo.gl/xxxxx"></textarea>
-    <small style="color:#16a34a;font-weight:700">Dica: Google Maps > Seu negocio > Compartilhar > Copiar link</small>
-    <div style="margin-top:10px"><button class="btn btn-black" onclick="usarMeuMaps()">📍 USAR MINHA LOCALIZAÇÃO ATUAL COMO MAPS</button></div>
-    <label>OU NOME DO NEGOCIO</label><input id="mapsNomeNegocio" placeholder="Dion Lanchonete Teixeira">
-    <label>Nome TAG</label><input id="mapsNome" placeholder="Maps Loja">
-    <button class="btn btn-orange" onclick="gravarLocal('maps')">📲 GRAVAR GOOGLE MAPS NA TAG - JEITO 1</button>
-    <button class="btn btn-black" onclick="testarMapsLink()" style="background:#22c55e">👁️ TESTAR LINK</button>
-  </div>
-  <div id="previewLink" style="display:none;margin-top:10px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:10px;font-size:11px;word-break:break-all"></div>
-</div>
-<div id="escrever" class="tab-content"><div class="alert"><b>✍️ ESCREVER - TEXTO LIVRE NA TAG</b></div><label>Texto</label><textarea id="textoLivre" rows="4" placeholder="Qualquer texto"></textarea><label>Nome TAG</label><input id="nomeTexto"><button class="btn btn-orange" onclick="gravarTexto()">📲 GRAVAR TEXTO</button></div>
-<div id="outros" class="tab-content"><div class="alert"><b>🛠️ FERRAMENTAS</b></div><button class="btn btn-black" onclick="lerTag()">👁️ LER TAG</button><button class="btn btn-orange" onclick="apagarTag()">🗑️ APAGAR TAG</button><label style="margin-top:12px">📶 WIFI</label><input id="wifiNome" placeholder="Nome WiFi"><input id="wifiSenha" placeholder="Senha" style="margin-top:8px"><button class="btn btn-orange" onclick="gravarWifi()">📶 GRAVAR WIFI NA TAG</button><div id="leitura" style="margin-top:12px;background:#eee;padding:10px;border-radius:10px;font-size:11px;word-break:break-all"></div></div>
-<div id="minhas" class="tab-content"><div class="alert"><b>📚 MINHAS TAGS + LOGS</b></div><button class="btn btn-black" onclick="listarTags()">🔄 ATUALIZAR LISTA</button><button class="btn btn-orange" onclick="limparTags()">🗑️ LIMPAR TUDO</button><div id="listaTags" style="margin-top:10px"></div></div>
-</div>
-<script>
-function openTab(id){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
-function openPag(tipo){document.querySelectorAll('.pag-sub').forEach(s=>s.style.display='none');document.querySelectorAll('.pag-btn').forEach(b=>b.classList.remove('active'));document.getElementById('pag-'+tipo).style.display='block';document.getElementById('btn-'+tipo).classList.add('active');}
-function openLocal(tipo){document.querySelectorAll('.local-sub').forEach(s=>s.style.display='none');document.querySelectorAll('.local-btn').forEach(b=>b.classList.remove('active'));document.getElementById('local-'+tipo).style.display='block';document.getElementById('btn-'+tipo).classList.add('active');}
-let ultimoLink='';
-function gerarRastreavel(){
- let chave=document.getElementById('chavePix').value.trim();
- let nome=document.getElementById('nomePix').value.trim()||'Dion';
- let cidade=document.getElementById('cidadePix').value.trim()||'Teixeira de Freitas';
- let valor=document.getElementById('valorPix').value.trim();
- let tag=document.getElementById('tagIdRast').value.trim()||'CAIXA01';
- let loja=document.getElementById('lojaRast').value.trim()||'Dion NFC';
- let nomeTag=document.getElementById('nomeTagRast').value.trim()||'CAIXA01';
- if(!chave){alert('Cola o codigo Pix ou chave');return;}
- let codigo=chave;
- if(chave.length<50 && !chave.startsWith('000201')){
-   codigo=`00020126360014BR.GOV.BCB.PIX0114${chave}520400005303986540${valor?valor:''}5802BR5913${nome.substring(0,13)}6008${cidade.substring(0,8)}62070503***6304`;
- }
- let b64=btoa(unescape(encodeURIComponent(codigo)));
- let base=location.href.replace(/index.*$/,'').replace(/\/$/,'');
- let url=`${base}/pay.html?codigoB64=${encodeURIComponent(b64)}&tag=${encodeURIComponent(tag)}&loja=${encodeURIComponent(loja)}&nome=${encodeURIComponent(nome)}`;
- if(!url.includes('pay.html')) url=location.origin+location.pathname.replace('index.html','')+'pay.html?codigoB64='+encodeURIComponent(b64)+'&tag='+encodeURIComponent(tag)+'&loja='+encodeURIComponent(loja);
- ultimoLink=url;localStorage.setItem('dion_ultimo_link',url);
- document.getElementById('linkGerado').innerText=url;document.getElementById('resultadoLink').style.display='block';
- salvarTag(nomeTag,'RASTREAVEL',url,chave.substring(0,30));
+</div><script>
+let tipoAtual = 'url';
+function setTipo(t){
+  tipoAtual=t;
+  document.querySelectorAll('.btn-opcao').forEach(b=>b.classList.remove('ativo'));
+  document.getElementById('op-'+t).classList.add('ativo');
+  document.getElementById('status').innerText='Modo: '+t.toUpperCase();
 }
-function gerarLinkPixId(){
- let codigo=document.getElementById('codigoPixId').value.trim()||document.getElementById('chavePix').value.trim();
- if(!codigo){alert('Cola codigo');return;}
- let tag=document.getElementById('idPixId').value.trim()||'CAIXA01';
- let b64=btoa(unescape(encodeURIComponent(codigo)));
- let base=location.href.replace(/index.*$/,'').replace(/\/$/,'');
- let url=`${base}/pay.html?codigoB64=${encodeURIComponent(b64)}&tag=${encodeURIComponent(tag)}&loja=Dion`;
- ultimoLink=url;localStorage.setItem('dion_ultimo_link',url);
- document.getElementById('linkGerado').innerText=url;document.getElementById('resultadoLink').style.display='block';
+function mudarAba(nome){
+  document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
+  document.querySelectorAll('.topo button').forEach(b=>b.classList.remove('ativo'));
+  document.getElementById('aba-'+nome).classList.add('ativa');
+  document.getElementById('t-'+nome).classList.add('ativo');
+  if(nome==='minhas') carregarMinhas();
 }
-function gravarPixId(){
- let codigo=document.getElementById('codigoPixId').value.trim();
- if(!codigo){alert('Cola o codigo Pix copia e cola');return;}
- let nomeTag=document.getElementById('nomePixId').value.trim()||'CAIXA01';
- let idTag=document.getElementById('idPixId').value.trim()||'CAIXA01';
- let b64=btoa(unescape(encodeURIComponent(codigo)));
- let base=location.href.replace(/index.*$/,'').replace(/\/$/,'');
- let url=`${base}/pay.html?codigoB64=${encodeURIComponent(b64)}&tag=${encodeURIComponent(idTag)}&loja=Dion`;
- ultimoLink=url;
- salvarTag(nomeTag,'PIX ID - COPIA E COLA',url,codigo.substring(0,30));
- gravarNfc(url);
+
+const btnGravar = document.getElementById('btnGravar');
+const inputLink = document.getElementById('inputLink');
+const inputNome = document.getElementById('inputNome');
+const statusEl = document.getElementById('status');
+
+btnGravar.addEventListener('click', async () => {
+  let urlFinal = inputLink.value.trim();
+  if(!urlFinal){ alert('Cole o link do Google!'); return; }
+  if(!urlFinal.startsWith('http')) urlFinal = 'https://'+urlFinal;
+
+  // Se for rastreável, cria link no meio
+  if(tipoAtual === 'url'){
+    const id = Math.random().toString(36).substring(2,8);
+    // Salva mapeamento do rastreio
+    let mapas = JSON.parse(localStorage.getItem('mapas_rastreio')||'{}');
+    mapas[id] = urlFinal;
+    localStorage.setItem('mapas_rastreio', JSON.stringify(mapas));
+    urlFinal = location.origin + location.pathname + '?r=' + id + '&dest=' + encodeURIComponent(urlFinal);
+  }
+
+  try{
+    if(!('NDEFReader' in window)) throw new Error('Sem suporte a NFC - Use Chrome Android');
+    statusEl.innerText = '⏳ Aproxime a tag NFC agora...';
+    const ndef = new NDEFReader();
+    await ndef.write({ records: [{ recordType: "url", data: urlFinal }] });
+    statusEl.innerText = '✅ GRAVADO COM SUCESSO!';
+    // Salva na lista Minhas
+    let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
+    lista.unshift({nome: inputNome.value||'Tag sem nome', url: urlFinal, original: inputLink.value, data: new Date().toLocaleString(), cliques: 0});
+    localStorage.setItem('tags_dion', JSON.stringify(lista));
+    alert('Gravado! Agora teste encostando outra vez.');
+  }catch(e){
+    console.error(e);
+    if(e.name==='NotAllowedError'){
+      alert('PERMISSÃO NEGADA - FAÇA ISSO:\n1. Clica no cadeado 🔒 na barra de endereço\n2. Permissões > NFC > Permitir\n3. Configurações do Celular > Apps > Chrome > Permissões > Dispositivos por perto > Permitir\n4. Deixa NFC ligado');
+      statusEl.innerText = '❌ Permissão negada - libere no cadeado';
+    }else{
+      alert('Erro: '+e.message);
+      statusEl.innerText = '❌ '+e.message;
+    }
+  }
+});
+
+function carregarMinhas(){
+  let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
+  let html = lista.length? '': '<p style="color:#888">Nenhuma tag ainda</p>';
+  lista.forEach((t,i)=>{
+    html+=`<div style="border-bottom:1px solid #333;padding:8px 0"><b>${t.nome}</b><br><small>${t.data} - Cliques: ${t.cliques}</small><br><small style="color:#ff6a00;word-break:break-all">${t.url}</small></div>`;
+  });
+  document.getElementById('listaTags').innerHTML = html;
 }
-function gravarEmv(){
- let codigo=document.getElementById('codigoEmv').value.trim();
- let nome=document.getElementById('nomeEmv').value.trim()||'EMV';
- if(!codigo){alert('Codigo');return;}
- salvarTag(nome,'EMV',codigo,codigo.substring(0,20));
- gravarNfc(codigo);
+
+function gerarPixLink(){
+  const chave = document.getElementById('pixChave').value;
+  document.getElementById('inputLink').value = 'pix:'+chave;
+  mudarAba('escrever');
+  setTipo('pixid');
 }
-function gravarLinkGenerico(idLink,idNome){
- let url=document.getElementById(idLink).value.trim();
- let nome=document.getElementById(idNome).value.trim()||'LINK';
- if(!url){alert('Link');return;}
- salvarTag(nome,'LINK',url,url);
- gravarNfc(url);
+
+// Verifica se foi aberto via link rastreável ?r=
+(function checkRedirect(){
+  const params = new URLSearchParams(location.search);
+  if(params.has('r')){
+    const dest = params.get('dest');
+    if(dest){
+      // Conta clique
+      let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
+      // aqui você futuramente manda pro seu servidor contar
+      setTimeout(()=>{ location.href = decodeURIComponent(dest); }, 800);
+      document.body.innerHTML = '<h1 style="text-align:center;margin-top:50%">Redirecionando para avaliação...</h1>';
+    }
+  }
+})();
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js', {scope: './'});
 }
-function gravarUltimoLink(){if(!ultimoLink)ultimoLink=localStorage.getItem('dion_ultimo_link')||'';if(!ultimoLink){alert('Gere o link primeiro');return;}gravarNfc(ultimoLink);}
-function gravarTexto(){let t=document.getElementById('textoLivre').value.trim();let n=document.getElementById('nomeTexto').value.trim()||'TEXTO';if(!t){alert('Texto');return;}salvarTag(n,'TEXTO',t,t.substring(0,30));gravarNfcTexto(t);}
-function pegarGPS(){if(!navigator.geolocation){alert('Sem GPS');return;}navigator.geolocation.getCurrentPosition(p=>{document.getElementById('localLat').value=p.coords.latitude.toFixed(6);document.getElementById('localLng').value=p.coords.longitude.toFixed(6);alert('GPS pego!');},e=>alert(e.message),{enableHighAccuracy:true});}
-function usarMeuMaps(){if(!navigator.geolocation){alert('Sem GPS');return;}navigator.geolocation.getCurrentPosition(p=>{let link=`https://www.google.com/maps/search/?api=1&query=${p.coords.latitude},${p.coords.longitude}`;document.getElementById('mapsLink').value=link;document.getElementById('previewLink').style.display='block';document.getElementById('previewLink').innerHTML='<b>✅ Link Maps:</b><br>'+link;});}
-function testarMapsLink(){let link=document.getElementById('mapsLink').value.trim()||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(document.getElementById('mapsNomeNegocio').value.trim())}`;if(!link||link.includes('query=&')){alert('Cola link');return;}window.open(link,'_blank');}
-function gravarLocal(tipo){
- let url='',nomeTag='';
- if(tipo==='local'){let lat=document.getElementById('localLat').value.trim(),lng=document.getElementById('localLng').value.trim();if(!lat||!lng){alert('Pega GPS');return;}url=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;nomeTag=document.getElementById('localNome').value||'LOCAL';}
- else if(tipo==='end'){let end=document.getElementById('endEndereco').value.trim();if(!end){alert('End');return;}url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;nomeTag=document.getElementById('endNome').value||'END';}
- else if(tipo==='destino'){let dest=document.getElementById('destEndereco').value.trim();if(!dest){alert('Dest');return;}url=`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`;nomeTag=document.getElementById('destNome').value||'DESTINO';}
- else if(tipo==='perto'){let oq=document.getElementById('pertoOq').value.trim();if(!oq){alert('O que');return;}url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(oq)}`;nomeTag=document.getElementById('pertoNome').value||'PERTO';}
- else if(tipo==='coord'){let lat=document.getElementById('coordLat').value.trim(),lng=document.getElementById('coordLng').value.trim();if(!lat||!lng){alert('LatLng');return;}url=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;nomeTag=document.getElementById('coordNome').value||'COORD';}
- else if(tipo==='maps'){let linkColado=document.getElementById('mapsLink').value.trim();if(linkColado){url=linkColado;}else{let nome=document.getElementById('mapsNomeNegocio').value.trim();if(!nome){alert('Cola link Maps');return;}url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome)}`;}nomeTag=document.getElementById('mapsNome').value||'MAPS';}
- ultimoLink=url;document.getElementById('previewLink').style.display='block';document.getElementById('previewLink').innerHTML='<b>✅ Link Maps:</b><br>'+url;salvarTag(nomeTag,'MAPS_'+tipo.toUpperCase(),url,url.substring(0,40));gravarNfc(url);
-}
-async function gravarNfc(dado){if(!('NDEFReader' in window)){alert('Sem NFC. Link: '+dado);prompt('Copie:',dado);return;}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:'url',data:dado}]});alert('✅ TAG GRAVADA!\n'+dado.substring(0,80));}catch(e){alert('Erro NFC: '+e.message);}}
-async function gravarNfcTexto(dado){if(!('NDEFReader' in window)){alert('Sem NFC');return;}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:'text',data:dado}]});alert('✅ TEXTO GRAVADO!');}catch(e){alert(e.message);}}
-async function gravarWifi(){let ssid=document.getElementById('wifiNome').value.trim();let pass=document.getElementById('wifiSenha').value.trim();if(!ssid){alert('Nome WiFi');return;}let wifi=`WIFI:S:${ssid};T:WPA;P:${pass};;`;gravarNfc(wifi);salvarTag(ssid,'WIFI',wifi,ssid);}
-async function lerTag(){if(!('NDEFReader' in window)){alert('Sem NFC');return;}try{const ndef=new NDEFReader();await ndef.scan();ndef.onreading=e=>{let txt='';for(let r of e.message.records){try{txt+=new TextDecoder().decode(r.data)+'\n';}catch{}}document.getElementById('leitura').innerText='Lido: '+txt;};document.getElementById('leitura').innerText='Aproxime a TAG...';}catch(e){alert(e);}}
-async function apagarTag(){if(!confirm('Apagar TAG?'))return;try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:'text',data:''}]});alert('TAG apagada');}catch(e){alert(e.message);}}
-function salvarTag(nome,tipo,link,extra){let tags=JSON.parse(localStorage.getItem('dion_tags')||'[]');tags.unshift({nome,tipo,link,extra,data:new Date().toLocaleString()});localStorage.setItem('dion_tags',JSON.stringify(tags.slice(0,150)));listarTags();}
-function listarTags(){let tags=JSON.parse(localStorage.getItem('dion_tags')||'[]');let html=tags.length?'':'<p>Nenhuma TAG ainda</p>';tags.forEach(t=>{html+=`<div class=item><b>${t.nome}</b> - ${t.tipo} - ${t.data}<br><small>${t.extra}</small><br><small style=word-break:break-all>${t.link.substring(0,70)}...</small></div>`;});let el=document.getElementById('listaTags');if(el)el.innerHTML=html;}
-function limparTags(){if(!confirm('Limpar tudo?'))return;localStorage.removeItem('dion_tags');listarTags();}
-function copiarLink(){let txt=document.getElementById('linkGerado').innerText; navigator.clipboard.writeText(txt).then(()=>alert('Copiado!')).catch(()=>prompt('Copie:',txt));}
-listarTags();
 </script>
 </body>
 </html>
