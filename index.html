@@ -3,108 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dion NFC - Completo</title>
+<title>Dion NFC - Completo com Maps</title>
 <style>
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:#fff7ed;color:#111}
-header{background:#ff6a00;color:#fff;padding:14px;text-align:center;font-weight:900;font-size:18px;position:sticky;top:0;z-index:10}
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#f5f5f5;color:#111}
+header{background:#ff6a00;color:#fff;padding:14px;text-align:center;font-weight:900;position:sticky;top:0;z-index:10}
 .tabs{display:flex;overflow-x:auto;background:#fff;border-bottom:2px solid #ff6a00;position:sticky;top:46px;z-index:9}
-.tabs button{flex:0 0 auto;padding:12px 14px;border:none;background:#fff;font-weight:700;white-space:nowrap;border-bottom:3px solid transparent}
+.tabs button{flex:0 0 auto;padding:12px 14px;border:none;background:#fff;font-weight:700}
 .tabs button.active{border-bottom:3px solid #ff6a00;color:#ff6a00;background:#fff7ed}
-.container{max-width:500px;margin:auto;padding:12px}
+.container{max-width:520px;margin:auto;padding:12px}
 .tab-content{display:none;background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:80px}
 .tab-content.active{display:block}
+.local-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.local-btn{padding:12px 6px;border:2px solid #eee;border-radius:12px;background:#f9f9f9;font-weight:700;font-size:13px;cursor:pointer;text-align:center}
+.local-btn.active{border-color:#ff6a00;background:#fff7ed;color:#ff6a00}
 label{display:block;font-weight:800;font-size:12px;margin-top:14px;margin-bottom:6px}
 input,textarea,select{width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:12px;font-size:14px}
 input:focus,textarea:focus{border-color:#ff6a00}
 .btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:900;font-size:15px;margin-top:12px;cursor:pointer}
 .btn-orange{background:#ff6a00;color:#fff}
 .btn-black{background:#111;color:#fff}
-.btn-green{background:#16a34a;color:#fff}
 .alert{background:#fff7ed;border:2px solid #ff6a00;border-radius:12px;padding:10px;font-size:12px;margin-bottom:12px}
-.badge{display:inline-block;background:#ff6a00;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px}
 .item{border:1px solid #eee;border-radius:12px;padding:10px;margin-top:8px;font-size:12px}
 </style>
 </head>
 <body>
-<header>🔶 DION NFC - COMPLETO V3 - SIMPLES</header>
+<header>🔶 DION NFC - COM MAPS - JEITO 1</header>
 <div class="tabs">
-<button class="active" onclick="openTab('pagRastreavel')">🔗 PAG RASTREÁVEL</button>
-<button onclick="openTab('wifi')">📶 WIFI</button>
-<button onclick="openTab('link')">🌐 LINK</button>
-<button onclick="openTab('minhas')">📚 MINHAS</button>
-<button onclick="openTab('logs')">📊 LOGS</button>
-<button onclick="openTab('outros')">🛠️ OUTROS</button>
+<button onclick="openTab('escrever')">Escrever</button>
+<button class="active" onclick="openTab('local')">Local</button>
+<button onclick="openTab('pag')">Pag</button>
+<button onclick="openTab('outros')">Outros</button>
+<button onclick="openTab('minhas')">Minhas</button>
 </div>
 <div class="container">
-
-<div id="pagRastreavel" class="tab-content active">
-  <div class="alert">
-    <b>🔗 MODO SIMPLES - SÓ COLAR O CÓDIGO</b><br>
-    Cole o código Pix Copia e Cola. Quando cliente encostar na TAG, já vai abrir pra pagar no banco dele.
+<div id="local" class="tab-content active">
+  <div class="local-grid">
+    <button class="local-btn active" onclick="openLocal('local')" id="btn-local">📍<br>Local</button>
+    <button class="local-btn" onclick="openLocal('end')" id="btn-end">🏠<br>End</button>
+    <button class="local-btn" onclick="openLocal('destino')" id="btn-destino">🚩<br>Destino</button>
+    <button class="local-btn" onclick="openLocal('perto')" id="btn-perto">🔍<br>Perto</button>
+    <button class="local-btn" onclick="openLocal('coord')" id="btn-coord">📌<br>Coord</button>
+    <button class="local-btn" onclick="openLocal('maps')" id="btn-maps">🗺️<br>Maps</button>
   </div>
-  <label>📋 CÓDIGO PIX COPIA E COLA - COLE AQUI</label>
-  <textarea id="pixCodigoColar" rows="7" placeholder="00020126360014BR.GOV.BCB.PIX0114+55...6304..."></textarea>
-  <small>Código grande que começa com 000201...</small>
-  <label>🏷️ ID DA TAG</label>
-  <input id="pixTagIdSimples" placeholder="Ex: CAIXA01">
-  <label>🏪 NOME DA LOJA</label>
-  <input id="pixLojaSimples" value="Dion NFC">
-  <div id="resultadoSimples" style="display:none;margin-top:16px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:12px">
-    <b>✅ Link gerado:</b>
-    <div id="linkGerado" style="font-size:11px;word-break:break-all;background:#fff;padding:8px;border-radius:8px;margin-top:8px"></div>
+  <div id="local-local" class="local-sub">
+    <div class="alert"><b>📍 LOCAL - Sua localização atual</b><br>Pega seu GPS e grava na TAG.</div>
+    <button class="btn btn-black" onclick="pegarGPS('local')">📡 PEGAR MINHA LOCALIZAÇÃO ATUAL</button>
+    <label>Latitude</label><input id="localLat" placeholder="-16.1234">
+    <label>Longitude</label><input id="localLng" placeholder="-39.1234">
+    <label>Nome da TAG</label><input id="localNome" placeholder="Ex: Minha Loja">
+    <button class="btn btn-orange" onclick="gravarLocal('local')">📲 GRAVAR LOCAL NA TAG</button>
   </div>
+  <div id="local-end" class="local-sub" style="display:none">
+    <div class="alert"><b>🏠 ENDEREÇO</b></div>
+    <label>ENDEREÇO COMPLETO</label><input id="endEndereco" placeholder="Rua das Flores 123, Teixeira de Freitas BA">
+    <label>Nome da TAG</label><input id="endNome" placeholder="Ex: Loja Centro">
+    <button class="btn btn-orange" onclick="gravarLocal('end')">📲 GRAVAR ENDEREÇO NA TAG</button>
+  </div>
+  <div id="local-destino" class="local-sub" style="display:none">
+    <div class="alert"><b>🚩 DESTINO - Rota direta</b></div>
+    <label>DESTINO</label><input id="destEndereco" placeholder="Avenida Getúlio Vargas 1000">
+    <label>Nome da TAG</label><input id="destNome" placeholder="Ex: Como Chegar">
+    <button class="btn btn-orange" onclick="gravarLocal('destino')">📲 GRAVAR ROTA NA TAG</button>
+  </div>
+  <div id="local-perto" class="local-sub" style="display:none">
+    <div class="alert"><b>🔍 PERTO - Buscar perto</b></div>
+    <label>O QUE BUSCAR PERTO?</label><input id="pertoOq" placeholder="Ex: Lanchonete, Farmácia">
+    <label>Nome da TAG</label><input id="pertoNome" placeholder="Ex: Buscar Lanchonete">
+    <button class="btn btn-orange" onclick="gravarLocal('perto')">📲 GRAVAR BUSCA NA TAG</button>
+  </div>
+  <div id="local-coord" class="local-sub" style="display:none">
+    <div class="alert"><b>📌 COORDENADAS</b></div>
+    <label>Latitude</label><input id="coordLat" placeholder="-16.12345">
+    <label>Longitude</label><input id="coordLng" placeholder="-39.12345">
+    <label>Nome da TAG</label><input id="coordNome" placeholder="Ex: Caixa 01">
+    <button class="btn btn-orange" onclick="gravarLocal('coord')">📲 GRAVAR COORD NA TAG</button>
+  </div>  <div id="local-maps" class="local-sub" style="display:none">
+    <div class="alert" style="border-color:#22c55e;background:#f0fdf4"><b>🗺️ MAPS - JEITO 1 - COLA LINK DO GOOGLE MAPS</b><br>✅ Copia link no Google Maps > Compartilhar > Copiar link e cola aqui. Cliente encosta e abre direto no app Google Maps.</div>
+    <label>🔗 COLE O LINK DO GOOGLE MAPS AQUI - JEITO 1</label>
+    <textarea id="mapsLink" rows="3" placeholder="Cole aqui: https://maps.app.goo.gl/xxxxx ou https://www.google.com/maps/place/..."></textarea>
+    <small style="color:#16a34a;font-weight:700">Dica: Abra seu negócio no Google Maps > Compartilhar > Copiar link</small>
+    <div style="margin-top:12px"><button class="btn btn-black" onclick="usarMeuMaps()">📍 USAR MINHA LOCALIZAÇÃO ATUAL COMO MAPS</button></div>
+    <label style="margin-top:12px">OU DIGITE O NOME DO SEU NEGÓCIO</label>
+    <input id="mapsNomeNegocio" placeholder="Ex: Dion Lanchonete Teixeira de Freitas">
+    <label>Nome da TAG</label><input id="mapsNome" placeholder="Ex: Maps Loja - Caixa 01">
+    <button class="btn btn-orange" onclick="gravarLocal('maps')">📲 GRAVAR GOOGLE MAPS NA TAG - JEITO 1</button>
+    <button class="btn btn-black" onclick="testarMapsLink()" style="background:#22c55e">👁️ TESTAR LINK ANTES DE GRAVAR</button>
+  </div>
+  <div id="previewLink" style="display:none;margin-top:12px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:10px;font-size:11px;word-break:break-all"></div>
+</div>
+<div id="pag" class="tab-content">
+  <div class="alert"><b>🔗 PAG SIMPLES - SÓ CÓDIGO PIX</b><br>Cola o código Pix Copia e Cola</div>
+  <label>📋 CÓDIGO PIX COPIA E COLA</label><textarea id="pixCodigoColar" rows="5" placeholder="000201..."></textarea>
+  <label>🏷️ ID TAG</label><input id="pixTagIdSimples" placeholder="CAIXA01">
+  <label>🏪 LOJA</label><input id="pixLojaSimples" value="Dion NFC">
   <button class="btn btn-orange" onclick="gerarLinkSimples()">🔗 GERAR LINK</button>
-  <button class="btn btn-black" onclick="gravarUltimoLink()">📲 GRAVAR NA TAG NFC</button>
-  <button class="btn btn-green" onclick="testarUltimoLink()">👁️ TESTAR LINK</button>
-</div><div id="wifi" class="tab-content">
-  <div class="alert"><b>📶 TAG WIFI - CONECTA AUTOMÁTICO</b></div>
-  <label>📡 NOME DA REDE WIFI</label><input id="wifiSSID" placeholder="Ex: Dion_Loja">
-  <label>🔒 SENHA</label><input id="wifiPass" placeholder="12345678">
-  <label>🔐 TIPO</label><select id="wifiTipo"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">Sem senha</option></select>
-  <label>🏷️ NOME DA TAG</label><input id="wifiTagNome" placeholder="WIFI_MESA01">
-  <button class="btn btn-orange" onclick="gravarWifi()">📲 GRAVAR WIFI</button>
+  <button class="btn btn-black" onclick="gravarUltimoLink()">📲 GRAVAR NA TAG</button>
+  <div id="resultadoSimples" style="display:none;margin-top:12px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:10px;font-size:11px;word-break:break-all"><div id="linkGerado"></div></div>
 </div>
-
-<div id="link" class="tab-content">
-  <div class="alert"><b>🌐 LINK / INSTAGRAM</b></div>
-  <label>🔗 SEU LINK</label><input id="linkUrl" placeholder="https://instagram.com/sualoja">
-  <label>🏷️ NOME DA TAG</label><input id="linkTagNome" placeholder="INSTA_LOJA">
-  <button class="btn btn-orange" onclick="gravarLink()">📲 GRAVAR LINK</button>
-</div>
-
-<div id="minhas" class="tab-content"><div class="alert"><b>📚 MINHAS TAGS</b></div><div id="listaTags"></div><button class="btn btn-black" onclick="exportarBackup()">💾 BACKUP</button></div>
-<div id="logs" class="tab-content"><div class="alert"><b>📊 LOGS</b></div><div id="listaLogs"></div></div>
-<div id="outros" class="tab-content"><div class="alert"><b>🛠️ FERRAMENTAS</b></div><button class="btn btn-black" onclick="lerTag()">👁️ LER TAG</button><button class="btn btn-orange" onclick="apagarTag()">🗑️ APAGAR TAG</button><div id="leitura" style="margin-top:12px;background:#f5f5f5;padding:10px;border-radius:10px;font-size:12px;word-break:break-all"></div><hr><label>📥 RESTAURAR BACKUP</label><input type="file" id="importFile" accept=".json" onchange="importarBackup(event)"></div>
+<div id="escrever" class="tab-content"><div class="alert"><b>🌐 LINK GERAL</b></div><label>Link</label><input id="linkUrl" placeholder="https://..."><label>Nome TAG</label><input id="linkNome"><button class="btn btn-orange" onclick="gravarLinkGeral()">📲 GRAVAR LINK</button></div>
+<div id="minhas" class="tab-content"><div class="alert"><b>📚 MINHAS TAGS</b></div><div id="listaTags"></div></div>
+<div id="outros" class="tab-content"><div class="alert"><b>🛠️ FERRAMENTAS</b></div><button class="btn btn-black" onclick="lerTag()">👁️ LER TAG</button><button class="btn btn-orange" onclick="apagarTag()">🗑️ APAGAR</button><div id="leitura" style="margin-top:12px;background:#eee;padding:10px;border-radius:10px;font-size:12px;word-break:break-all"></div></div>
 </div>
 <script>
-function openTab(id){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active');if(id==='minhas')listarTags();if(id==='logs')listarLogs();}
+function openTab(id){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active');}
+function openLocal(tipo){document.querySelectorAll('.local-sub').forEach(s=>s.style.display='none');document.querySelectorAll('.local-btn').forEach(b=>b.classList.remove('active'));document.getElementById('local-'+tipo).style.display='block';document.getElementById('btn-'+tipo).classList.add('active');}
+function pegarGPS(){if(!navigator.geolocation){alert('Sem GPS');return;}navigator.geolocation.getCurrentPosition(p=>{document.getElementById('localLat').value=p.coords.latitude.toFixed(6);document.getElementById('localLng').value=p.coords.longitude.toFixed(6);alert('GPS pego');},e=>alert('Erro GPS: '+e.message),{enableHighAccuracy:true});}
+function usarMeuMaps(){if(!navigator.geolocation){alert('Sem GPS');return;}navigator.geolocation.getCurrentPosition(p=>{let link=`https://www.google.com/maps/search/?api=1&query=${p.coords.latitude},${p.coords.longitude}`;document.getElementById('mapsLink').value=link;document.getElementById('previewLink').style.display='block';document.getElementById('previewLink').innerHTML='<b>✅ Link gerado:</b><br>'+link;},e=>alert('Erro: '+e.message));}
+function testarMapsLink(){let link=document.getElementById('mapsLink').value.trim()||gerarMapsPorNome();if(!link){alert('Cola um link');return;}window.open(link,'_blank');}
+function gerarMapsPorNome(){let nome=document.getElementById('mapsNomeNegocio').value.trim();if(nome){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome)}`;}return '';}
 let ultimoLink='';
-function gerarLinkSimples(){
-  let codigo=document.getElementById('pixCodigoColar').value.trim();
-  let tag=document.getElementById('pixTagIdSimples').value.trim()||'CAIXA01';
-  let loja=document.getElementById('pixLojaSimples').value.trim()||'Dion NFC';
-  if(!codigo){alert('Cola o código Pix primeiro!');return;}
-  let codigoB64=btoa(unescape(encodeURIComponent(codigo)));
-  let base=location.href.replace(/index\.html.*$/,'').replace(/\/$/,'');
-  let url=base+'/pay.html?codigoB64='+encodeURIComponent(codigoB64)+'&tag='+encodeURIComponent(tag)+'&loja='+encodeURIComponent(loja);
-  if(!url.includes('pay.html')) url=location.origin+location.pathname.replace('index.html','')+'pay.html?codigoB64='+encodeURIComponent(codigoB64)+'&tag='+encodeURIComponent(tag)+'&loja='+encodeURIComponent(loja);
-  ultimoLink=url; localStorage.setItem('dion_ultimo_link',url);
-  document.getElementById('linkGerado').innerText=url; document.getElementById('resultadoSimples').style.display='block';
-  salvarTag(tag,'PAG SIMPLES',url,codigo.substring(0,30)+'...'); alert('✅ Link gerado! Clique em GRAVAR NA TAG NFC');
+function gravarLocal(tipo){
+let url='',nomeTag='';
+if(tipo==='local'){let lat=document.getElementById('localLat').value.trim(),lng=document.getElementById('localLng').value.trim();if(!lat||!lng){alert('Pega GPS');return;}url=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;nomeTag=document.getElementById('localNome').value||'LOCAL';}
+else if(tipo==='end'){let end=document.getElementById('endEndereco').value.trim();if(!end){alert('Endereço');return;}url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;nomeTag=document.getElementById('endNome').value||'END';}
+else if(tipo==='destino'){let dest=document.getElementById('destEndereco').value.trim();if(!dest){alert('Destino');return;}url=`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`;nomeTag=document.getElementById('destNome').value||'DESTINO';}
+else if(tipo==='perto'){let oq=document.getElementById('pertoOq').value.trim();if(!oq){alert('O que buscar');return;}url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(oq)}`;nomeTag=document.getElementById('pertoNome').value||'PERTO';}
+else if(tipo==='coord'){let lat=document.getElementById('coordLat').value.trim(),lng=document.getElementById('coordLng').value.trim();if(!lat||!lng){alert('Lat/lng');return;}url=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;nomeTag=document.getElementById('coordNome').value||'COORD';}
+else if(tipo==='maps'){let linkColado=document.getElementById('mapsLink').value.trim();if(linkColado){url=linkColado;}else{url=gerarMapsPorNome();if(!url){alert('Cole link Maps');return;}}nomeTag=document.getElementById('mapsNome').value||'MAPS';}
+ultimoLink=url;document.getElementById('previewLink').style.display='block';document.getElementById('previewLink').innerHTML='<b>✅ Link Maps:</b><br>'+url+'<br><br>Gravando na TAG...';salvarTag(nomeTag,'MAPS_'+tipo.toUpperCase(),url,url.substring(0,40));gravarNfc(url);
 }
-function gravarUltimoLink(){ if(!ultimoLink) ultimoLink=localStorage.getItem('dion_ultimo_link')||''; if(!ultimoLink){alert('Gere o link primeiro!');return;} gravarNfc(ultimoLink); }
-function testarUltimoLink(){ if(!ultimoLink) ultimoLink=localStorage.getItem('dion_ultimo_link')||''; if(!ultimoLink){alert('Gere o link primeiro!');return;} window.open(ultimoLink,'_blank'); }
-function gravarWifi(){ let ssid=document.getElementById('wifiSSID').value.trim(); let pass=document.getElementById('wifiPass').value.trim(); let tipo=document.getElementById('wifiTipo').value; let nome=document.getElementById('wifiTagNome').value.trim()||'WIFI_'+ssid; if(!ssid){alert('Nome WiFi');return;} let wifiString=`WIFI:T:${tipo};S:${ssid};P:${pass};;`; salvarTag(nome,'WIFI',wifiString,ssid); gravarNfc(wifiString); }
-function gravarLink(){ let url=document.getElementById('linkUrl').value.trim(); let nome=document.getElementById('linkTagNome').value.trim()||'LINK'; if(!url){alert('Link');return;} salvarTag(nome,'LINK',url,url); gravarNfc(url); }
-async function gravarNfc(dado){ if(!('NDEFReader' in window)){alert('Sem NFC - Use Chrome Android. Link: '+dado); prompt('Copie:',dado); return;} try{ const ndef=new NDEFReader(); if(dado.startsWith('WIFI:')){ await ndef.write({records:[{recordType:'text',data:dado}]}); }else{ await ndef.write({records:[{recordType:'url',data:dado}]}); } alert('✅ TAG GRAVADA!'); }catch(e){alert('Erro: '+e.message);} }
-async function lerTag(){ if(!('NDEFReader' in window)){alert('Sem NFC');return;} try{ const ndef=new NDEFReader(); await ndef.scan(); ndef.onreading=e=>{ let txt=''; for(let r of e.message.records){ txt+=new TextDecoder().decode(r.data)+'\\n'; } document.getElementById('leitura').innerText='Lido: '+txt; }; document.getElementById('leitura').innerText='Aproxime a TAG...'; }catch(e){alert(e);} }
-async function apagarTag(){ if(!confirm('Apagar TAG?'))return; try{ const ndef=new NDEFReader(); await ndef.write({records:[{recordType:'text',data:''}]}); alert('TAG apagada'); }catch(e){alert(e.message);} }
-function salvarTag(nome,tipo,link,extra){ let tags=JSON.parse(localStorage.getItem('dion_tags')||'[]'); tags.unshift({nome,tipo,link,extra,data:new Date().toLocaleString()}); localStorage.setItem('dion_tags',JSON.stringify(tags.slice(0,100))); }
-function listarTags(){ let tags=JSON.parse(localStorage.getItem('dion_tags')||'[]'); let html=tags.length?'':'<p>Nenhuma TAG</p>'; tags.forEach(t=>{ html+=`<div class=item><b>${t.nome}</b> <span class=badge>${t.tipo}</span><br><small>${t.data}</small><br>${t.extra}<br><small style="word-break:break-all">${t.link.substring(0,80)}...</small><br><button onclick="navigator.clipboard.writeText('${t.link}');alert('Copiado')">Copiar</button> <button onclick="gravarNfc('${t.link}')">Regravar</button></div>`; }); document.getElementById('listaTags').innerHTML=html; }
-function listarLogs(){ let logs=JSON.parse(localStorage.getItem('dion_logs')||'[]'); let html=logs.length?'':'<p>Nenhum log</p>'; logs.forEach(l=>{ html+=`<div class=item><b>${l.tag||''}</b> - ${l.loja}<br>${l.data}</div>`; }); document.getElementById('listaLogs').innerHTML=html; }
-function exportarBackup(){ let data={tags:JSON.parse(localStorage.getItem('dion_tags')||'[]'),logs:JSON.parse(localStorage.getItem('dion_logs')||'[]'),ultimo:localStorage.getItem('dion_ultimo_link')||''}; let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dion-nfc-backup.json'; a.click(); }
-function importarBackup(e){ let file=e.target.files[0]; if(!file)return; let r=new FileReader(); r.onload=ev=>{ try{ let d=JSON.parse(ev.target.result); if(d.tags)localStorage.setItem('dion_tags',JSON.stringify(d.tags)); if(d.logs)localStorage.setItem('dion_logs',JSON.stringify(d.logs)); alert('Restaurado!'); listarTags(); }catch(err){alert('Inválido')} }; r.readAsText(file); }
+function gerarLinkSimples(){let codigo=document.getElementById('pixCodigoColar').value.trim();let tag=document.getElementById('pixTagIdSimples').value.trim()||'CAIXA01';let loja=document.getElementById('pixLojaSimples').value.trim()||'Dion NFC';if(!codigo){alert('Cola código Pix');return;}let b64=btoa(unescape(encodeURIComponent(codigo)));let base=location.href.replace(/index.*$/,'').replace(/\/$/,'');let url=base+'/pay.html?codigoB64='+encodeURIComponent(b64)+'&tag='+encodeURIComponent(tag)+'&loja='+encodeURIComponent(loja);if(!url.includes('pay.html'))url=location.origin+location.pathname.replace('index.html','')+'pay.html?codigoB64='+encodeURIComponent(b64)+'&tag='+encodeURIComponent(tag)+'&loja='+encodeURIComponent(loja);ultimoLink=url;localStorage.setItem('dion_ultimo_link',url);document.getElementById('linkGerado').innerText=url;document.getElementById('resultadoSimples').style.display='block';salvarTag(tag,'PAG',url,codigo.substring(0,20));}
+function gravarUltimoLink(){if(!ultimoLink)ultimoLink=localStorage.getItem('dion_ultimo_link')||'';if(!ultimoLink){alert('Gere link');return;}gravarNfc(ultimoLink);}
+function gravarLinkGeral(){let url=document.getElementById('linkUrl').value.trim();let nome=document.getElementById('linkNome').value||'LINK';if(!url){alert('Link');return;}salvarTag(nome,'LINK',url,url);gravarNfc(url);}
+async function gravarNfc(dado){if(!('NDEFReader' in window)){alert('Sem NFC - Link: '+dado);prompt('Copie:',dado);return;}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:'url',data:dado}]});alert('✅ TAG GRAVADA!\n'+dado.substring(0,80));}catch(e){alert('Erro: '+e.message);}}
+async function lerTag(){if(!('NDEFReader' in window)){alert('Sem NFC');return;}try{const ndef=new NDEFReader();await ndef.scan();ndef.onreading=e=>{let txt='';for(let r of e.message.records){txt+=new TextDecoder().decode(r.data)+'\n';}document.getElementById('leitura').innerText='Lido: '+txt;};document.getElementById('leitura').innerText='Aproxime a TAG...';}catch(e){alert(e);}}
+async function apagarTag(){if(!confirm('Apagar?'))return;try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:'text',data:''}]});alert('Apagada');}catch(e){alert(e.message);}}
+function salvarTag(nome,tipo,link,extra){let tags=JSON.parse(localStorage.getItem('dion_tags')||'[]');tags.unshift({nome,tipo,link,extra,data:new Date().toLocaleString()});localStorage.setItem('dion_tags',JSON.stringify(tags.slice(0,100)));listarTags();}
+function listarTags(){let tags=JSON.parse(localStorage.getItem('dion_tags')||'[]');let html=tags.length?'':'<p>Nenhuma TAG</p>';tags.forEach(t=>{html+=`<div class=item><b>${t.nome}</b> ${t.tipo}<br><small>${t.extra}</small><br><small style=word-break:break-all>${t.link.substring(0,60)}...</small></div>`;});let el=document.getElementById('listaTags');if(el)el.innerHTML=html;}
 listarTags();
 </script>
 </body>
