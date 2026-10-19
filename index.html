@@ -1,175 +1,26 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dion NFC</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system}
-body{background:#f8f8fa;color:#111;padding:12px;padding-bottom:110px}
-.top{display:flex;justify-content:space-between;align-items:center;padding:16px 6px;background:#fff;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,.05);margin-bottom:12px}
-.top h1{font-size:26px;font-weight:900} .top h1 span{color:#ff6a00} .top p{font-size:12px;color:#777}
-.tabs{display:flex;gap:14px;padding:12px 6px;background:#fff;border-radius:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);overflow-x:auto}
-.tab{font-size:13px;color:#888;cursor:pointer;padding:6px 10px;border-radius:20px;white-space:nowrap} .tab.active{background:#ff6a00;color:#fff;font-weight:700}
-.card{background:#fff;border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-.card h2{font-size:12px;color:#999;text-transform:uppercase;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.btn{background:#f5f5f7;border:1px solid #eee;border-radius:16px;padding:14px 6px;color:#222;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;text-align:center}
-.btn b{font-size:22px} .btn.pay{background:#111;color:#fff;border:none}
-.formCard{background:#fff;border:2px solid #ff6a00;border-radius:20px;padding:16px;margin-top:14px;display:none;box-shadow:0 8px 30px rgba(255,106,0,.2)}
-label{font-size:10px;color:#888;margin-top:12px;display:block;text-transform:uppercase;font-weight:700}
-input,select,textarea{width:100%;background:#fafafb;border:1px solid #e6e6e9;border-radius:12px;padding:12px;color:#111;margin-top:4px;font-size:13px}
-.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:15px;font-weight:900;color:#fff;margin-top:16px;cursor:pointer}
-.status{margin-top:12px;padding:12px;border-radius:12px;text-align:center;font-size:12px;font-weight:700;display:none}
-.tagItem{background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;margin-bottom:10px}
-.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px} .actions button{font-size:10px;padding:6px 10px;border-radius:20px;border:1px solid #eee;background:#f9f9f9;cursor:pointer}
-.counter{background:#ff6a00;color:#fff;font-size:10px;padding:3px 8px;border-radius:12px;margin-left:6px}
-</style>
-</head>
-<body>
-<div class="top"><div><h1>Dion <span>NFC</span></h1><p>Escolher tipo de gravacao NFC</p></div><div>🔔 ➕</div></div>
-<div class="tabs">
-<div class="tab active" onclick="switchTab('padrao',this)">Escrever</div>
-<div class="tab" onclick="switchTab('local',this)">Local</div>
-<div class="tab" onclick="switchTab('pag',this)">Pag</div>
-<div class="tab" onclick="switchTab('outros',this)">Outros</div>
-<div class="tab" onclick="switchTab('minhas',this)">Minhas <span id="tagCount" class="counter" style="display:none">0</span></div>
-</div>
-<div id="sec-padrao" class="card"><h2>Escrever - Padrao</h2><div class="grid">
-<button class="btn" onclick="openF('url')"><b>🌐</b>URL / Link</button>
-<button class="btn" onclick="openF('texto')"><b>📝</b>Texto</button>
-<button class="btn" onclick="openF('email')"><b>📧</b>Email</button>
-<button class="btn" onclick="openF('telefone')"><b>📞</b>Telefone</button>
-<button class="btn" onclick="openF('sms')"><b>💬</b>SMS</button>
-<button class="btn" onclick="openF('wifi')"><b>📶</b>WiFi</button>
-<button class="btn" onclick="openF('bluetooth')"><b>🔵</b>Bluetooth</button>
-<button class="btn" onclick="openF('contato')"><b>👤</b>Contato</button>
-<button class="btn" onclick="openF('app')"><b>📲</b>App</button>
-<button class="btn" onclick="openF('youtube')"><b>▶️</b>YouTube</button>
-</div></div>
-<div id="sec-local" class="card" style="display:none"><h2>Localizacao</h2><div class="grid">
-<button class="btn" onclick="openF('local_personalizada')"><b>📍</b>Local Personalizado</button>
-<button class="btn" onclick="openF('endereco')"><b>🏠</b>Endereco</button>
-<button class="btn" onclick="openF('destino')"><b>🚩</b>Destino</button>
-<button class="btn" onclick="openF('proximidades')"><b>🔍</b>Proximidades</button>
-<button class="btn" onclick="openF('coordenada')"><b>📌</b>Coordenada</button>
-<button class="btn" onclick="openF('maps')"><b>🗺️</b>Maps Link</button>
-</div></div>
-<div id="sec-pag" class="card" style="display:none"><h2>Pagamentos - Pix EMV Real</h2><div class="grid">
-<button class="btn pay" onclick="openF('pix')"><b>💠</b>Pix EMV</button>
-<button class="btn pay" onclick="openF('pix_id')"><b>🆔</b>Pix ID</button>
-<button class="btn pay" onclick="openF('nubank')"><b>💜</b>Nubank</button>
-<button class="btn pay" onclick="openF('mercadopago')"><b>💚</b>Mercado Pago</button>
-<button class="btn pay" onclick="openF('link_universal')"><b>🔗</b>Link Universal</button>
-<button class="btn pay" onclick="openF('link_copia')"><b>📋</b>Link + Copia</button>
-<button class="btn pay" onclick="openF('picpay')"><b>💛</b>PicPay</button>
-<button class="btn pay" onclick="openF('ifood')"><b>🍔</b>iFood</button>
-</div></div>
-<div id="sec-outros" class="card" style="display:none"><h2>Outras Funcoes</h2><div class="grid">
-<button class="btn" onclick="openF('copiar_tag')"><b>📋</b>Copiar TAG</button>
-<button class="btn" onclick="apagarTag()"><b>🗑️</b>Apagar</button>
-<button class="btn" onclick="openF('ler_memoria')"><b>🧠</b>Ler Memoria</button>
-<button class="btn" onclick="openF('bloquear_tag')"><b>🔒</b>Bloquear</button>
-<button class="btn" onclick="lerTag()"><b>👁️</b>Ler TAG</button>
-<button class="btn" onclick="openF('clonar')"><b>👯</b>Clonar</button>
-<button class="btn" onclick="openF('senha')"><b>🔑</b>Senha</button>
-<button class="btn" onclick="openF('historico')"><b>📊</b>Historico</button>
-<button class="btn" onclick="exportarBackup()"><b>💾</b>Backup</button>
-<button class="btn" onclick="document.getElementById('importFile').click()"><b>📥</b>Importar</button>
-</div><input type="file" id="importFile" style="display:none" onchange="importarBackup(this)"></div>
-<div id="sec-minhas" class="card" style="display:none"><h2>Minhas TAGs - Controle Total</h2>
-<div style="display:flex;gap:8px;margin-bottom:12px"><button onclick="exportarBackup()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #eee">💾 Exportar</button><button onclick="limparTodas()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #ffcccc;color:#c00">🗑️ Limpar</button></div>
-<div id="tagsList" style="text-align:center;color:#999;padding:20px">Nenhuma TAG ainda</div></div>
-<div id="formCard" class="formCard"><h2 id="formTitle" style="color:#ff6a00"></h2><div id="formFields"></div>
-<div id="nameField"><label>Nome da TAG</label><input id="f_nomeTag" placeholder="Ex: Dion NFC - Caixa 01"></div>
-<button class="write" onclick="gravar()">GRAVAR NA TAG NFC</button><div id="status" class="status"></div>
-<div id="qrArea" style="text-align:center;margin-top:12px;display:none"><img id="qrImg" style="width:160px;border-radius:12px"><br><small>QR Code</small></div></div><script>
-var PROTOCOLS=["http://","https://","ftp://","tel:","mailto:"];
-var current="",copiedData="",tags=[];
-try{tags=JSON.parse(localStorage.getItem('dion_nfc_v1')||'[]')}catch(e){tags=[]}
-function saveTags(){localStorage.setItem('dion_nfc_v1',JSON.stringify(tags));updateCounter();renderTags()}
-function updateCounter(){var c=document.getElementById('tagCount');c.style.display=tags.length>0?'inline':'none';c.innerText=tags.length}updateCounter();
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dion NFC</title><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><meta name="theme-color" content="#ff6a00"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#f8f8fa;padding:12px;padding-bottom:100px}.top{display:flex;justify-content:space-between;padding:16px;background:#fff;border-radius:20px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.05)}.top h1{font-size:26px;font-weight:900}.top h1 span{color:#ff6a00}.tabs{display:flex;gap:8px;padding:10px;background:#fff;border-radius:16px;margin-bottom:12px;overflow-x:auto}.tab{font-size:12px;color:#888;padding:7px 12px;border-radius:20px;white-space:nowrap;cursor:pointer}.tab.active{background:#ff6a00;color:#fff;font-weight:700}.card{background:#fff;border-radius:20px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.btn{background:#f5f5f7;border:1px solid #eee;border-radius:16px;padding:14px 4px;font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}.btn b{font-size:20px}.btn.pay{background:#111;color:#fff}.btn.pay.rast{background:#ff6a00}.formCard{background:#fff;border:2px solid #ff6a00;border-radius:20px;padding:16px;margin-top:12px;display:none}.write{width:100%;background:#ff6a00;border:none;border-radius:14px;padding:15px;font-weight:900;color:#fff;margin-top:12px;cursor:pointer}.status{margin-top:10px;padding:10px;border-radius:10px;text-align:center;font-size:12px;display:none}.tagItem{border:1px solid #eee;border-radius:14px;padding:10px;margin-bottom:8px}.counter{background:#ff6a00;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px}</style></head><body>
+<div class="top"><div><h1>Dion <span>NFC</span></h1><p style="font-size:11px;color:#888">Modelo 1 - Completo PWA + Rastreavel</p></div>🔔</div>
+<div class="tabs"><div class="tab active" onclick="switchTab('padrao',this)">Escrever</div><div class="tab" onclick="switchTab('local',this)">Local</div><div class="tab" onclick="switchTab('pag',this)">Pag</div><div class="tab" onclick="switchTab('outros',this)">Outros</div><div class="tab" onclick="switchTab('minhas',this)">Minhas <span id="tagCount" class="counter" style="display:none">0</span></div></div>
+<div id="sec-padrao" class="card"><div class="grid"><button class="btn" onclick="openF('url')"><b>🌐</b>URL</button><button class="btn" onclick="openF('texto')"><b>📝</b>Texto</button><button class="btn" onclick="openF('email')"><b>📧</b>Email</button><button class="btn" onclick="openF('telefone')"><b>📞</b>Tel</button><button class="btn" onclick="openF('sms')"><b>💬</b>SMS</button><button class="btn" onclick="openF('wifi')"><b>📶</b>WiFi</button><button class="btn" onclick="openF('bluetooth')"><b>🔵</b>BT</button><button class="btn" onclick="openF('contato')"><b>👤</b>Contato</button><button class="btn" onclick="openF('app')"><b>📲</b>App</button><button class="btn" onclick="openF('youtube')"><b>▶️</b>YT</button></div></div>
+<div id="sec-local" class="card" style="display:none"><div class="grid"><button class="btn" onclick="openF('local_personalizada')"><b>📍</b>Local</button><button class="btn" onclick="openF('endereco')"><b>🏠</b>End</button><button class="btn" onclick="openF('destino')"><b>🚩</b>Destino</button><button class="btn" onclick="openF('proximidades')"><b>🔍</b>Perto</button><button class="btn" onclick="openF('coordenada')"><b>📌</b>Coord</button><button class="btn" onclick="openF('maps')"><b>🗺️</b>Maps</button></div></div>
+<div id="sec-pag" class="card" style="display:none"><div class="grid"><button class="btn pay rast" onclick="openF('pay_rastreavel')"><b>🔗</b>LINK RASTREAVEL</button><button class="btn pay" onclick="openF('pix')"><b>💠</b>Pix EMV</button><button class="btn pay" onclick="openF('pix_id')"><b>🆔</b>Pix ID</button><button class="btn pay" onclick="openF('nubank')"><b>💜</b>Nubank</button><button class="btn pay" onclick="openF('mercadopago')"><b>💚</b>Mercado Pago</button><button class="btn pay" onclick="openF('link_universal')"><b>🌐</b>Link</button><button class="btn pay" onclick="openF('picpay')"><b>💛</b>PicPay</button><button class="btn pay" onclick="openF('ifood')"><b>🍔</b>iFood</button></div></div>
+<div id="sec-outros" class="card" style="display:none"><div class="grid"><button class="btn" onclick="openF('copiar_tag')"><b>📋</b>Copiar</button><button class="btn" onclick="apagarTag()"><b>🗑️</b>Apagar</button><button class="btn" onclick="openF('bloquear_tag')"><b>🔒</b>Bloq</button><button class="btn" onclick="lerTag()"><b>👁️</b>Ler</button><button class="btn" onclick="openF('clonar')"><b>👯</b>Clonar</button><button class="btn" onclick="verLogs()"><b>📊</b>Logs</button><button class="btn" onclick="exportarBackup()"><b>💾</b>Backup</button><button class="btn" onclick="document.getElementById('importFile').click()"><b>📥</b>Import</button></div><input type="file" id="importFile" style="display:none" onchange="importarBackup(this)"></div>
+<div id="sec-minhas" class="card" style="display:none"><div style="display:flex;gap:6px;margin-bottom:8px"><button onclick="exportarBackup()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #eee">💾 Export</button><button onclick="verLogs()" style="flex:1;padding:8px;border-radius:10px;background:#ff6a00;color:#fff;border:none">📊 Logs</button><button onclick="limparTodas()" style="padding:8px;border-radius:10px;border:1px solid #fcc;color:#c00">🗑️</button></div><div id="tagsList">Nenhuma</div><div id="logsList" style="display:none"></div></div>
+<div id="formCard" class="formCard"><h2 id="formTitle" style="color:#ff6a00"></h2><div id="formFields"></div><div><label>Nome TAG</label><input id="f_nomeTag" placeholder="Ex: Caixa 01"></div><button class="write" onclick="gravar()">GRAVAR NFC</button><div id="status" class="status"></div><div id="qrArea" style="text-align:center;display:none"><img id="qrImg" style="width:180px;border-radius:12px"></div></div><script>
+var PROTOCOLS=["http://","https://"];var current="",copiedData="",tags=[];try{tags=JSON.parse(localStorage.getItem('dion_nfc_v2')||'[]')}catch(e){tags=[]}
+function saveTags(){localStorage.setItem('dion_nfc_v2',JSON.stringify(tags));updateCounter();renderTags()}
+function updateCounter(){var c=document.getElementById('tagCount');c.style.display=tags.length?'inline':'none';c.innerText=tags.length}updateCounter();
 var forms={
-url:{title:'URL / Link',hasProto:true,build:d=>d.proto+d.url},
-texto:{title:'Texto',fields:[{id:'txt',label:'Texto',ph:'Ola mundo'}],build:d=>d.txt,type:'text'},
-email:{title:'Email',fields:[{id:'mail',label:'Email'},{id:'assunto',label:'Assunto'},{id:'corpo',label:'Corpo'}],build:d=>'mailto:'+d.mail+'?subject='+encodeURIComponent(d.assunto||'')+'&body='+encodeURIComponent(d.corpo||'')},
-telefone:{title:'Telefone',fields:[{id:'tel',label:'Numero'}],build:d=>'tel:'+d.tel},
-sms:{title:'SMS',fields:[{id:'num',label:'Numero'},{id:'msg',label:'Mensagem'}],build:d=>'sms:'+d.num+'?body='+encodeURIComponent(d.msg||'')},
-wifi:{title:'WiFi',fields:[{id:'ssid',label:'SSID'},{id:'pass',label:'Senha'}],build:d=>'WIFI:T:WPA;S:'+d.ssid+';P:'+d.pass+';;'},
-bluetooth:{title:'Bluetooth',fields:[{id:'mac',label:'MAC'},{id:'nomebt',label:'Nome'}],build:d=>'BT:MAC:'+d.mac},
-contato:{title:'Contato',fields:[{id:'nome',label:'Nome'},{id:'tel',label:'Tel'},{id:'email',label:'Email'}],build:d=>'BEGIN:VCARD\nFN:'+d.nome+'\nTEL:'+d.tel+'\nEND:VCARD',type:'text'},
-app:{title:'App',fields:[{id:'pkg',label:'Package'}],build:d=>'market://details?id='+d.pkg},
-youtube:{title:'YouTube',hasProto:true,build:d=>d.proto+d.url},
-local_personalizada:{title:'Local Personalizado',fields:[{id:'lat',label:'Latitude'},{id:'lng',label:'Longitude'},{id:'nome',label:'Nome'}],build:d=>'geo:'+d.lat+','+d.lng+'?q='+encodeURIComponent(d.nome||'')},
-endereco:{title:'Endereco',fields:[{id:'end',label:'Endereco'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.end)},
-destino:{title:'Destino',fields:[{id:'dest',label:'Destino'}],build:d=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(d.dest)},
-proximidades:{title:'Proximidades',fields:[{id:'q',label:'O que?'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.q)},
-coordenada:{title:'Coordenada',fields:[{id:'lat',label:'Lat'},{id:'lng',label:'Lng'}],build:d=>'geo:'+d.lat+','+d.lng},
-maps:{title:'Maps Link',hasProto:true,build:d=>d.proto+d.url},
-pix:{title:'Pix EMV',fields:[{id:'chave',label:'Chave Pix'},{id:'nome',label:'Nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'}],build:d=>gerarPixEMV(d.chave,d.nome,d.cidade,d.valor,d.txid||'DIONNFC'),type:'text'},
-pix_id:{title:'Pix ID',fields:[{id:'codigo',label:'Codigo Pix'}],build:d=>d.codigo,type:'text'},
-nubank:{title:'Nubank',hasProto:true,build:d=>d.proto+d.url},
-mercadopago:{title:'Mercado Pago',hasProto:true,build:d=>d.proto+d.url},
-link_universal:{title:'Link Universal',hasProto:true,build:d=>d.proto+d.url},
-link_copia:{title:'Link + Copia',fields:[{id:'link',label:'Link'},{id:'copia',label:'Pix copia'}],build:d=>d.link+'|COPY:'+d.copia},
-picpay:{title:'PicPay',hasProto:true,build:d=>d.proto+d.url},
-ifood:{title:'iFood',hasProto:true,build:d=>d.proto+d.url},
-copiar_tag:{title:'Copiar TAG',isCopy:true,build:()=>copiedData},
-ler_memoria:{title:'Ler Memoria',isReadMem:true,build:()=>'READ'},
-bloquear_tag:{title:'Bloquear',isLock:true,build:()=>'LOCK'},
-clonar:{title:'Clonar',isCopy:true,build:()=>copiedData},
-senha:{title:'Senha',fields:[{id:'pwd',label:'Senha'}],build:d=>'PWD:'+d.pwd,type:'text'},
-historico:{title:'Historico',isInfo:true,build:()=>'HIST'},
+url:{title:'URL',hasProto:true,build:d=>d.proto+d.url},texto:{title:'Texto',fields:[{id:'txt',label:'Texto'}],build:d=>d.txt,type:'text'},email:{title:'Email',fields:[{id:'mail',label:'Email'}],build:d=>'mailto:'+d.mail},telefone:{title:'Tel',fields:[{id:'tel',label:'Tel'}],build:d=>'tel:'+d.tel},sms:{title:'SMS',fields:[{id:'num',label:'Num'},{id:'msg',label:'Msg'}],build:d=>'sms:'+d.num},wifi:{title:'WiFi',fields:[{id:'ssid',label:'SSID'},{id:'pass',label:'Senha'}],build:d=>'WIFI:T:WPA;S:'+d.ssid+';P:'+d.pass+';;'},bluetooth:{title:'BT',fields:[{id:'mac',label:'MAC'}],build:d=>'BT:'+d.mac},contato:{title:'Contato',fields:[{id:'nome',label:'Nome'}],build:d=>'BEGIN:VCARD\nFN:'+d.nome+'\nEND:VCARD',type:'text'},app:{title:'App',fields:[{id:'pkg',label:'Pkg'}],build:d=>'market://details?id='+d.pkg},youtube:{title:'YT',hasProto:true,build:d=>d.proto+d.url},
+local_personalizada:{title:'Local',fields:[{id:'lat',label:'Lat'},{id:'lng',label:'Lng'}],build:d=>'geo:'+d.lat+','+d.lng},endereco:{title:'End',fields:[{id:'end',label:'End'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.end)},destino:{title:'Destino',fields:[{id:'dest',label:'Dest'}],build:d=>'https://maps.google.com/?daddr='+encodeURIComponent(d.dest)},proximidades:{title:'Perto',fields:[{id:'q',label:'O que'}],build:d=>'geo:0,0?q='+encodeURIComponent(d.q)},coordenada:{title:'Coord',fields:[{id:'lat',label:'Lat'},{id:'lng',label:'Lng'}],build:d=>'geo:'+d.lat+','+d.lng},maps:{title:'Maps',hasProto:true,build:d=>d.proto+d.url},
+pay_rastreavel:{title:'LINK RASTREAVEL',fields:[{id:'chave',label:'Chave Pix'},{id:'nome',label:'Nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'},{id:'tagid',label:'ID TAG'},{id:'loja',label:'Loja'}],build:d=>'https://manojhon12344321-ship-it.github.io/nfctools/pay.html?chave='+encodeURIComponent(d.chave)+'&nome='+encodeURIComponent(d.nome||'DION')+'&cidade='+encodeURIComponent(d.cidade||'TEIXEIRA')+'&valor='+encodeURIComponent(d.valor||'')+'&tag='+encodeURIComponent(d.tagid||'CAIXA01')+'&loja='+encodeURIComponent(d.loja||'Dion')},
+pix:{title:'Pix EMV',fields:[{id:'chave',label:'Chave'},{id:'nome',label:'Nome'},{id:'cidade',label:'Cidade'},{id:'valor',label:'Valor'}],build:d=>gerarPixEMV(d.chave,d.nome,d.cidade,d.valor,'DIONNFC'),type:'text'},pix_id:{title:'Pix ID',fields:[{id:'codigo',label:'Codigo'}],build:d=>d.codigo,type:'text'},nubank:{title:'Nubank',hasProto:true,build:d=>d.proto+d.url},mercadopago:{title:'MP',hasProto:true,build:d=>d.proto+d.url},link_universal:{title:'Link',hasProto:true,build:d=>d.proto+d.url},picpay:{title:'PicPay',hasProto:true,build:d=>d.proto+d.url},ifood:{title:'iFood',hasProto:true,build:d=>d.proto+d.url},copiar_tag:{title:'Copiar',isCopy:true,build:()=>copiedData},bloquear_tag:{title:'Bloquear',isLock:true,build:()=>'LOCK'},clonar:{title:'Clonar',isCopy:true,build:()=>copiedData},
 };
-function switchTab(n,el){
-['padrao','local','pag','outros','minhas'].forEach(s=>{let e=document.getElementById('sec-'+s);if(e)e.style.display=s===n?'block':'none'});
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(el)el.classList.add('active');
-document.getElementById('formCard').style.display='none';if(n==='minhas')renderTags();
-}
-function openF(k){current=k;let c=forms[k];let fc=document.getElementById('formCard');fc.style.display='block';document.getElementById('formTitle').innerText=c.title;let h='';if(c.hasProto){h+=`<label>Protocolo</label><select id="f_proto">${PROTOCOLS.map(p=>`<option ${p==='https://'?'selected':''}>${p}</option>`).join('')}</select><label>URL</label><input id="f_url" placeholder="dionnfc.com.br">`;}else if(c.fields){c.fields.forEach(f=>{h+=`<label>${f.label}</label><input id="f_${f.id}" placeholder="${f.ph||''}">`;});}document.getElementById('formFields').innerHTML=h;document.getElementById('status').style.display='none';document.getElementById('qrArea').style.display='none';window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}
-function gerarPixEMV(chave,nome,cidade,valor,txid){
-nome=(nome||'RECEBEDOR').toUpperCase().substring(0,25)||'RECEBEDOR';cidade=(cidade||'BRASIL').toUpperCase().substring(0,15)||'BRASIL';
-function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
-let payloadPix=tlv('00','br.gov.bcb.pix')+tlv('01',chave||'');
-let ma=tlv('26',payloadPix);
-let p=tlv('00','01')+tlv('01','12')+ma+tlv('52','0000')+tlv('53','986')+(valor?tlv('54',parseFloat(valor).toFixed(2)):'')+tlv('58','BR')+tlv('59',nome)+tlv('60',cidade)+tlv('62',tlv('05',txid||'DIONNFC'));
-let w=p+'6304';let crc=0xFFFF;for(let i=0;i<w.length;i++){crc^=w.charCodeAt(i)<<8;for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;crc&=0xFFFF}
-return w+crc.toString(16).toUpperCase().padStart(4,'0');
-}
-async function gravar(){
-let c=forms[current];let d={};
-if(c.fields)c.fields.forEach(f=>{let el=document.getElementById('f_'+f.id);if(el)d[f.id]=el.value.trim()});
-if(c.hasProto){d.proto=document.getElementById('f_proto').value;d.url=document.getElementById('f_url').value.trim()}
-let finalData=c.build(d);
-let nomeTag=document.getElementById('f_nomeTag').value.trim()||c.title;
-if(!finalData){showS('Preencha','err');return}
-if(!('NDEFReader' in window)){showS('Use Chrome Android','err');return}
-try{
-showS('Aproxime a TAG...','info');
-let ndef=new NDEFReader();
-let rec=c.type==='text'?{recordType:'text',data:finalData}:{recordType:'url',data:finalData};
-if(c.isLock){await ndef.write({records:[]});showS('Bloqueado','ok');return}
-await ndef.write({records:[rec]});
-tags.unshift({id:Date.now(),nome:nomeTag,tipo:c.title,dado:finalData,data:new Date().toLocaleString(),leituras:0,gravacoes:1});
-saveTags();showS('GRAVADO: '+nomeTag,'ok');gerarQR(finalData);
-}catch(e){showS('Erro:'+e.message,'err')}
-}
-function renderTags(){
-let l=document.getElementById('tagsList');
-if(tags.length===0){l.innerHTML='Nenhuma TAG ainda';return}
-l.innerHTML=tags.map(t=>`<div class="tagItem"><b>${t.nome}</b> <small>${t.tipo} - ${t.data} | ${t.gravacoes} grav | ${t.leituras} leituras</small><p style="font-size:11px;word-break:break-all;background:#fafafa;padding:8px;border-radius:8px;margin-top:6px">${t.dado.substring(0,200)}</p><div class="actions"><button onclick="duplicarTag(${t.id})">Duplicar</button><button onclick="shareTag(${t.id})">Share</button><button onclick="qrTag(${t.id})">QR</button><button onclick="editarTag(${t.id})">Editar</button><button onclick="deletarTag(${t.id})">Deletar</button></div></div>`).join('');
-}
-function duplicarTag(id){let t=tags.find(x=>x.id===id);if(!t)return;tags.unshift({...t,id:Date.now(),nome:t.nome+' (copia)',data:new Date().toLocaleString()});saveTags();}
-function shareTag(id){let t=tags.find(x=>x.id===id);if(!t)return;if(navigator.share){navigator.share({title:t.nome,text:t.dado})}else{navigator.clipboard.writeText(t.dado);alert('Copiado')}}
-function qrTag(id){let t=tags.find(x=>x.id===id);if(t)gerarQR(t.dado)}
-function editarTag(id){let t=tags.find(x=>x.id===id);let novo=prompt('Novo nome:',t.nome);if(novo){t.nome=novo;saveTags()}}
-function deletarTag(id){if(confirm('Deletar?')){tags=tags.filter(x=>x.id!==id);saveTags()}}
-function limparTodas(){if(confirm('Apagar todas?')){tags=[];saveTags()}}
-function gerarQR(texto){let img=document.getElementById('qrImg');let area=document.getElementById('qrArea');area.style.display='block';img.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(texto);document.getElementById('formCard').style.display='block'}
-async function lerTag(){try{let ndef=new NDEFReader();await ndef.scan();showS('Aproxime TAG...','info');ndef.onreading=e=>{let dec=new TextDecoder();let txt='';for(let r of e.message.records){try{txt+=dec.decode(r.data)}catch{txt+=r.data}}copiedData=txt;showS('LIDO:'+txt.substring(0,100),'ok');tags.forEach(t=>{if(t.dado===txt)t.leituras=(t.leituras||0)+1});saveTags();gerarQR(txt)}}catch(e){showS('Erro:'+e.message,'err')}}
-async function apagarTag(){try{let ndef=new NDEFReader();await ndef.write({records:[]});showS('Apagada','ok')}catch(e){showS('Erro:'+e.message,'err')}}
-function exportarBackup(){let blob=new Blob([JSON.stringify(tags,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dion-nfc-backup-'+Date.now()+'.json';a.click()}
-function importarBackup(input){let file=input.files[0];if(!file)return;let r=new FileReader();r.onload=e=>{try{let data=JSON.parse(e.target.result);if(Array.isArray(data)){tags=data.concat(tags);saveTags();showS('Importado '+data.length,'ok')}}catch(err){showS('Erro importar','err')}};r.readAsText(file)}
-function showS(m,t){let s=document.getElementById('status');s.style.display='block';s.innerText=m;s.style.background=t==='ok'?'#e8f5e9':t==='err'?'#ffebee':'#fff3e0';s.style.color=t==='ok'?'#2e7d32':t==='err'?'#c62828':'#e65100'}
-</script>
-</body>
-</html>
+function switchTab(n,el){['padrao','local','pag','outros','minhas'].forEach(s=>{let e=document.getElementById('sec-'+s);if(e)e.style.display=s===n?'block':'none'});document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('formCard').style.display='none';if(n==='minhas')renderTags()}
+function openF(k){current=k;let c=forms[k];let fc=document.getElementById('formCard');fc.style.display='block';document.getElementById('formTitle').innerText=c.title;let h='';if(c.hasProto){h+=`<label>Prot</label><select id="f_proto">${PROTOCOLS.map(p=>`<option ${p==='https://'?'selected':''}>${p}</option>`).join('')}</select><label>URL</label><input id="f_url">`}else if(c.fields){c.fields.forEach(f=>{h+=`<label>${f.label}</label><input id="f_${f.id}">`})}document.getElementById('formFields').innerHTML=h;document.getElementById('status').style.display='none';document.getElementById('qrArea').style.display='none'}
+function gerarPixEMV(chave,nome,cidade,valor,txid){nome=(nome||'RECEBEDOR').toUpperCase().substring(0,25);cidade=(cidade||'BRASIL').toUpperCase().substring(0,15);function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}let p1=tlv('00','br.gov.bcb.pix')+tlv('01',chave||'');let ma=tlv('26',p1);let p=tlv('00','01')+tlv('01','12')+ma+tlv('52','0000')+tlv('53','986')+(valor?tlv('54',parseFloat(valor).toFixed(2)):'')+tlv('58','BR')+tlv('59',nome)+tlv('60',cidade)+tlv('62',tlv('05',txid));let w=p+'6304';let crc=0xFFFF;for(let i=0;i<w.length;i++){crc^=w.charCodeAt(i)<<8;for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;crc&=0xFFFF}return w+crc.toString(16).toUpperCase().padStart(4,'0')}
+async function gravar(){let c=forms[current];let d={};if(c.fields)c.fields.forEach(f=>{let el=document.getElementById('f_'+f.id);if(el)d[f.id]=el.value.trim()});if(c.hasProto){d.proto=document.getElementById('f_proto').value;d.url=document.getElementById('f_url').value.trim()}let finalData=c.build(d);let nomeTag=document.getElementById('f_nomeTag').value.trim()||c.title;if(!finalData){showS('Preencha','err');return}if(!('NDEFReader' in window)){showS('Chrome Android','err');return}try{showS('Aproxime TAG...','info');let ndef=new NDEFReader();let rec=c.type==='text'?{recordType:'text',data:finalData}:{recordType:'url',[STRIPPED] if(c.isLock){await ndef.write({records:[]});showS('Bloq','ok');return}await ndef.write({records:[rec]});tags.unshift({id:Date.now(),nome:nomeTag,tipo:c.title,dado:finalData,data:new Date().toLocaleString()});saveTags();showS('GRAVADO:'+nomeTag,'ok');gerarQR(finalData)}catch(e){showS('Erro:'+e.message,'err')}}
+function renderTags(){let l=document.getElementById('tagsList');if(tags.length==0){l.innerHTML='Nenhuma';return}l.innerHTML=tags.map(t=>`<div class="tagItem"><b>${t.nome}</b><small> ${t.tipo} ${t.data}</small><p style="font-size:11px;word-break:break-all;background:#fafafa;padding:4px">${t.dado.substring(0,100)}</p><button onclick="qrTag(${t.id})">QR</button> <button onclick="deletarTag(${t.id})">Del</button></div>`).join('')}
+function qrTag(id){let t=tags.find(x=>x.id===id);if(t)gerarQR(t.dado)}function deletarTag(id){tags=tags.filter(x=>x.id!==id);saveTags()}function limparTodas(){tags=[];saveTags()}function gerarQR(txt){let i=document.getElementById('qrImg');let a=document.getElementById('qrArea');a.style.display='block';i.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(txt)}
+async function lerTag(){try{let n=new NDEFReader();await n.scan();showS('Aproxime','info');n.onreading=e=>{let d=new TextDecoder();let t='';for(let r of e.message.records){try{t+=d.decode(r.data)}catch{t+=r.data}}copiedData=t;showS('LIDO:'+t.substring(0,50),'ok')}}catch(e){showS('Erro','err')}}async function apagarTag(){let n=new NDEFReader();await n.write({records:[]});showS('Apagada','ok')}function exportarBackup(){let b=new Blob([JSON.stringify(tags)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dion.json';a.click()}function importarBackup(i){let f=i.files[0];let r=new FileReader();r.onload=e=>{tags=JSON.parse(e.target.result).concat(tags);saveTags()};r.readAsText(f)}function verLogs(){let logs=JSON.parse(localStorage.getItem('dion_logs')||'[]');let l=document.getElementById('logsList');l.style.display=l.style.display==='none'?'block':'none';l.innerHTML=logs.length?logs.map(x=>`<div class="tagItem"><small>${x.data} ${x.loja} ${x.tag} R$ ${x.valor}</small></div>`).join(''):'Sem logs'}function showS(m,t){let s=document.getElementById('status');s.style.display='block';s.innerText=m;s.style.background=t==='ok'?'#e8f5e9':'#ffebee'}if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
+</script></body></html>
