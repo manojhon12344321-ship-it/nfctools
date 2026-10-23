@@ -20,6 +20,7 @@ body{font-family:Arial, sans-serif;background:#0e0e0e;color:#fff;margin:0;paddin
 input, select{width:100%;padding:14px;border-radius:12px;border:2px solid #333;background:#000;color:#fff;margin:6px 0;outline:none}
 input:focus{border-color:#ff6a00}
 #btnGravar{width:100%;padding:18px;background:#ff6a00;border:none;border-radius:12px;font-weight:bold;font-size:18px;color:#000;margin-top:12px}
+#btnApagar{width:100%;padding:16px;background:#111;border:2px solid #ef4444;border-radius:12px;font-weight:bold;font-size:16px;color:#ef4444;margin-top:10px}
 #status{text-align:center;margin-top:10px;font-weight:bold}
 .aba{display:none}.aba.ativa{display:block}
 </style>
@@ -53,6 +54,7 @@ input:focus{border-color:#ff6a00}
     <input id="inputNome" placeholder="Ex: Avaliação Google Loja Centro">
 
     <button id="btnGravar">📲 GRAVAR NA TAG</button>
+    <button id="btnApagar" onclick="apagarTag()">🗑️ APAGAR TAG</button>
     <div id="status">Pronto pra gravar</div>
   </div>
 </div>
@@ -135,6 +137,42 @@ btnGravar.addEventListener('click', async () => {
     }
   }
 });
+
+// ===== FUNÇÃO APAGAR TAG FUNCIONAL - ADICIONADA =====
+async function apagarTag(){
+  const statusEl = document.getElementById('status');
+  const btnApagar = document.getElementById('btnApagar');
+  if(!('NDEFReader' in window)){
+    alert('❌ Sem suporte a NFC - Use Chrome no Android');
+    return;
+  }
+  if(!confirm('Tem certeza que quer APAGAR tudo dessa tag? Essa ação deixa a tag vazia.')){
+    return;
+  }
+  try{
+    if(btnApagar) btnApagar.innerText = '⏳ Aproxime a tag...';
+    if(statusEl) statusEl.innerText = '🔥 Aproxime a tag NFC para APAGAR...';
+    
+    const ndef = new NDEFReader();
+    // Gravar vazio = apaga a tag
+    await ndef.write({ records: [] });
+    
+    if(statusEl) statusEl.innerText = '✅ TAG APAGADA COM SUCESSO! Tag vazia.';
+    if(btnApagar) btnApagar.innerText = '🗑️ APAGAR TAG';
+    alert('✅ Tag apagada! Agora está vazia e pronta pra gravar de novo.');
+  }catch(e){
+    console.error(e);
+    if(statusEl) statusEl.innerText = '❌ Erro ao apagar: ' + e.message;
+    if(btnApagar) btnApagar.innerText = '🗑️ APAGAR TAG';
+    if(e.name==='NotAllowedError'){
+      alert('PERMISSÃO NEGADA - Libere o NFC no cadeado 🔒 da barra de endereço > Permissões > NFC > Permitir');
+    }else if(e.name==='NotSupportedError'){
+      alert('❌ Essa tag é de leitura apenas e não pode ser apagada.');
+    }else{
+      alert('❌ Erro ao apagar: '+e.message);
+    }
+  }
+}
 
 function carregarMinhas(){
   let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
