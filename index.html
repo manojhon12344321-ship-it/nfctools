@@ -20,8 +20,8 @@ body{font-family:Arial, sans-serif;background:#0e0e0e;color:#fff;margin:0;paddin
 input, select{width:100%;padding:14px;border-radius:12px;border:2px solid #333;background:#000;color:#fff;margin:6px 0;outline:none}
 input:focus{border-color:#ff6a00}
 #btnGravar{width:100%;padding:18px;background:#ff6a00;border:none;border-radius:12px;font-weight:bold;font-size:18px;color:#000;margin-top:12px}
-#btnApagar{width:100%;padding:16px;background:#111;border:2px solid #ef4444;border-radius:12px;font-weight:bold;font-size:16px;color:#ef4444;margin-top:10px}
-#status{text-align:center;margin-top:10px;font-weight:bold}
+#btnApagar{width:100%;padding:16px;background:#111;border:2px solid #ef4444;border-radius:12px;font-weight:bold;font-size:16px;color:#ef4444;margin-top:10px;display:block}
+#status{text-align:center;margin-top:12px;font-weight:bold;font-size:16px;min-height:24px;background:#000;padding:10px;border-radius:8px;border:1px solid #333}
 .aba{display:none}.aba.ativa{display:block}
 </style>
 </head>
@@ -33,7 +33,8 @@ input:focus{border-color:#ff6a00}
  <button id="t-pag" onclick="mudarAba('pag')">Pag</button>
  <button id="t-outros" onclick="mudarAba('outros')">Outros</button>
  <button id="t-minhas" onclick="mudarAba('minhas')">Minhas</button>
-</div><!-- ABA ESCREVER -->
+</div>
+
 <div id="aba-escrever" class="aba ativa">
   <div class="card">
     <div class="titulo-laranja">TIPO DE CONTEÚDO</div>
@@ -48,38 +49,23 @@ input:focus{border-color:#ff6a00}
 
     <div class="titulo-laranja">LINK GENERICO</div>
     <input id="inputLink" type="url" placeholder="https://g.page/r/seu-link-de-avaliacao-google">
-    <small style="color:#888">Cole aqui o link de Avaliação do Google. Quando o cliente encostar, vai direto pra avaliar.</small>
+    <small style="color:#888">Cole aqui o link de Avaliação do Google.</small>
 
     <div class="titulo-laranja">NOME DA TAG</div>
     <input id="inputNome" placeholder="Ex: Avaliação Google Loja Centro">
 
     <button id="btnGravar">📲 GRAVAR NA TAG</button>
-    <button id="btnApagar" onclick="apagarTag()">🗑️ APAGAR TAG</button>
+    <button id="btnApagar" onclick="apagarTag()">🗑️ APAGAR TAG - LIMPAR LINK</button>
     <div id="status">Pronto pra gravar</div>
   </div>
 </div>
 
-<!-- ABA PAG -->
-<div id="aba-pag" class="aba">
-  <div class="card">
-    <div class="titulo-laranja">PAGAMENTO / PIX</div>
-    <input id="pixChave" placeholder="Sua chave PIX (CPF, celular, email)">
-    <input id="pixValor" placeholder="Valor (opcional) ex: 10.00">
-    <button class="btn-opcao" style="width:100%;margin-top:10px" onclick="gerarPixLink()">Gerar Link PIX</button>
-  </div>
-</div>
+<div id="aba-pag" class="aba"><div class="card"><div class="titulo-laranja">PAGAMENTO / PIX</div><input id="pixChave" placeholder="Sua chave PIX"><input id="pixValor" placeholder="Valor opcional"><button class="btn-opcao" style="width:100%;margin-top:10px" onclick="gerarPixLink()">Gerar Link PIX</button></div></div>
+<div id="aba-local" class="aba"><div class="card">Função Local</div></div>
+<div id="aba-outros" class="aba"><div class="card">Função WiFi e outras</div></div>
+<div id="aba-minhas" class="aba"><div class="card"><div class="titulo-laranja">MINHAS TAGS</div><div id="listaTags"></div></div></div>
 
-<!-- ABA OUTRAS -->
-<div id="aba-local" class="aba"><div class="card">Função Local - Use o tipo Texto Livre com endereço do Maps</div></div>
-<div id="aba-outros" class="aba"><div class="card">Função WiFi, Telefone e outras aqui</div></div>
-
-<!-- ABA MINHAS - ONDE VÊ O RASTREIO -->
-<div id="aba-minhas" class="aba">
-  <div class="card">
-    <div class="titulo-laranja">MINHAS TAGS GRAVADAS (RASTREIO)</div>
-    <div id="listaTags"></div>
-  </div>
-</div><script>
+<script>
 let tipoAtual = 'url';
 function setTipo(t){
   tipoAtual=t;
@@ -104,73 +90,85 @@ btnGravar.addEventListener('click', async () => {
   let urlFinal = inputLink.value.trim();
   if(!urlFinal){ alert('Cole o link do Google!'); return; }
   if(!urlFinal.startsWith('http')) urlFinal = 'https://'+urlFinal;
-
-  // Se for rastreável, cria link no meio
   if(tipoAtual === 'url'){
     const id = Math.random().toString(36).substring(2,8);
-    // Salva mapeamento do rastreio
     let mapas = JSON.parse(localStorage.getItem('mapas_rastreio')||'{}');
     mapas[id] = urlFinal;
     localStorage.setItem('mapas_rastreio', JSON.stringify(mapas));
     urlFinal = location.origin + location.pathname + '?r=' + id + '&dest=' + encodeURIComponent(urlFinal);
   }
-
   try{
     if(!('NDEFReader' in window)) throw new Error('Sem suporte a NFC - Use Chrome Android');
     statusEl.innerText = '⏳ Aproxime a tag NFC agora...';
+    statusEl.style.color = '#ff6a00';
     const ndef = new NDEFReader();
     await ndef.write({ records: [{ recordType: "url", data: urlFinal }] });
     statusEl.innerText = '✅ GRAVADO COM SUCESSO!';
-    // Salva na lista Minhas
+    statusEl.style.color = '#22c55e';
     let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
     lista.unshift({nome: inputNome.value||'Tag sem nome', url: urlFinal, original: inputLink.value, data: new Date().toLocaleString(), cliques: 0});
     localStorage.setItem('tags_dion', JSON.stringify(lista));
-    alert('Gravado! Agora teste encostando outra vez.');
+    alert('Gravado!');
   }catch(e){
-    console.error(e);
-    if(e.name==='NotAllowedError'){
-      alert('PERMISSÃO NEGADA - FAÇA ISSO:\n1. Clica no cadeado 🔒 na barra de endereço\n2. Permissões > NFC > Permitir\n3. Configurações do Celular > Apps > Chrome > Permissões > Dispositivos por perto > Permitir\n4. Deixa NFC ligado');
-      statusEl.innerText = '❌ Permissão negada - libere no cadeado';
-    }else{
-      alert('Erro: '+e.message);
-      statusEl.innerText = '❌ '+e.message;
-    }
+    alert('Erro: '+e.message);
+    statusEl.innerText = '❌ '+e.message;
+    statusEl.style.color = '#ef4444';
   }
 });
 
-// ===== FUNÇÃO APAGAR TAG FUNCIONAL - ADICIONADA =====
+// FUNÇÃO APAGAR - V4 COM MENSAGEM VISIVEL
 async function apagarTag(){
-  const statusEl = document.getElementById('status');
-  const btnApagar = document.getElementById('btnApagar');
+  const status = document.getElementById('status');
+  const btn = document.getElementById('btnApagar');
+  
+  // MOSTRA NA HORA
+  status.innerText = '👉 CLICOU EM APAGAR - AGORA APROXIME A TAG E SEGURE 3s';
+  status.style.color = '#ff6a00';
+  status.style.background = '#331a00';
+  btn.innerText = '⏳ AGUARDANDO TAG... APROXIME AGORA!';
+  
+  console.log('Função apagar chamada');
+  
   if(!('NDEFReader' in window)){
-    alert('❌ Sem suporte a NFC - Use Chrome no Android');
+    status.innerText = '❌ Sem suporte NFC - Use Chrome Android';
     return;
   }
-  if(!confirm('Tem certeza que quer APAGAR tudo dessa tag? Essa ação deixa a tag vazia.')){
+
+  if(!confirm('Apagar LINK da tag? Ela vai ficar vazia.')){
+    status.innerText = 'Cancelado';
+    btn.innerText = '🗑️ APAGAR TAG - LIMPAR LINK';
     return;
   }
+
   try{
-    if(btnApagar) btnApagar.innerText = '⏳ Aproxime a tag...';
-    if(statusEl) statusEl.innerText = '🔥 Aproxime a tag NFC para APAGAR...';
-    
     const ndef = new NDEFReader();
-    // Gravar vazio = apaga a tag
+    status.innerText = '🔥 APROXIME A TAG AGORA - NÃO TIRE POR 3 SEGUNDOS';
+    
+    // Grava vazio para apagar o link
     await ndef.write({ records: [] });
     
-    if(statusEl) statusEl.innerText = '✅ TAG APAGADA COM SUCESSO! Tag vazia.';
-    if(btnApagar) btnApagar.innerText = '🗑️ APAGAR TAG';
-    alert('✅ Tag apagada! Agora está vazia e pronta pra gravar de novo.');
+    status.innerText = '✅ TAG APAGADA! LINK REMOVIDO - TAG VAZIA';
+    status.style.color = '#22c55e';
+    status.style.background = '#002a00';
+    btn.innerText = '🗑️ APAGAR TAG - LIMPAR LINK';
+    alert('✅ TAG APAGADA COM SUCESSO!\nO link foi removido. Agora ela está vazia.');
+    
   }catch(e){
     console.error(e);
-    if(statusEl) statusEl.innerText = '❌ Erro ao apagar: ' + e.message;
-    if(btnApagar) btnApagar.innerText = '🗑️ APAGAR TAG';
-    if(e.name==='NotAllowedError'){
-      alert('PERMISSÃO NEGADA - Libere o NFC no cadeado 🔒 da barra de endereço > Permissões > NFC > Permitir');
-    }else if(e.name==='NotSupportedError'){
-      alert('❌ Essa tag é de leitura apenas e não pode ser apagada.');
-    }else{
-      alert('❌ Erro ao apagar: '+e.message);
+    // tenta segundo método se o primeiro falhar
+    if(e.message.includes('Failed') || e.name === 'NotSupportedError'){
+      try{
+        const ndef2 = new NDEFReader();
+        await ndef2.write({ records: [{ recordType: "text", data: " " }] });
+        status.innerText = '✅ TAG APAGADA! (método 2)';
+        alert('✅ Apagada!');
+        return;
+      }catch(e2){}
     }
+    status.innerText = '❌ Erro: ' + e.message;
+    status.style.color = '#ef4444';
+    btn.innerText = '🗑️ APAGAR TAG - LIMPAR LINK';
+    alert('Erro ao apagar: ' + e.message + '\nDeixe a tag encostada sem tirar por 3s');
   }
 }
 
@@ -178,33 +176,26 @@ function carregarMinhas(){
   let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
   let html = lista.length? '': '<p style="color:#888">Nenhuma tag ainda</p>';
   lista.forEach((t,i)=>{
-    html+=`<div style="border-bottom:1px solid #333;padding:8px 0"><b>${t.nome}</b><br><small>${t.data} - Cliques: ${t.cliques}</small><br><small style="color:#ff6a00;word-break:break-all">${t.url}</small></div>`;
+    html+=`<div style="border-bottom:1px solid #333;padding:8px 0"><b>${t.nome}</b><br><small>${t.data}</small><br><small style="color:#ff6a00;word-break:break-all">${t.url}</small></div>`;
   });
   document.getElementById('listaTags').innerHTML = html;
 }
-
 function gerarPixLink(){
   const chave = document.getElementById('pixChave').value;
   document.getElementById('inputLink').value = 'pix:'+chave;
   mudarAba('escrever');
   setTipo('pixid');
 }
-
-// Verifica se foi aberto via link rastreável ?r=
 (function checkRedirect(){
   const params = new URLSearchParams(location.search);
   if(params.has('r')){
     const dest = params.get('dest');
     if(dest){
-      // Conta clique
-      let lista = JSON.parse(localStorage.getItem('tags_dion')||'[]');
-      // aqui você futuramente manda pro seu servidor contar
       setTimeout(()=>{ location.href = decodeURIComponent(dest); }, 800);
-      document.body.innerHTML = '<h1 style="text-align:center;margin-top:50%">Redirecionando para avaliação...</h1>';
+      document.body.innerHTML = '<h1 style="text-align:center;margin-top:50%">Redirecionando...</h1>';
     }
   }
 })();
-
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js', {scope: './'});
 }
